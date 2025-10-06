@@ -1,0 +1,1 @@
+Base64 placeholder for soft chime audio can be replaced with a short <1s WAV.
