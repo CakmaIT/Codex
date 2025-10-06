@@ -1,12 +1,12 @@
 # Neşeli İngilizce Sınıf Uygulaması
 
-Bu depo, 5. sınıf öğrencileri için hazırlanan projeksiyon dostu "Neşeli İngilizce" etkinlik sayfasını içerir. Uygulama, kelime çarkı, çoktan seçmeli quizler, sınıf meydan okumaları ve takım skor panosu gibi sınıf içi etkileşimleri destekler.
+Bu depo, 5. sınıf öğrencileri için hazırlanan projeksiyon dostu "Neşeli İngilizce" etkinlik sayfasını içerir. Uygulama; öğrencilerin adlarını ekleyip rastgele seçebildikleri, tek menüden yönetilen renkli mini oyunlar (kelime çarkı, hız testi, sınıf görevleri, kelime avı ve emoji hikâyesi) ile puan panosunu destekler.
 
 ## Dosya Yapısı
 
 - `index.html` – Sayfanın iskeletini ve etkinlik bölümlerini barındırır.
 - `style.css` – Renkli arayüz, tipografi ve düzen stillerini tanımlar.
-- `script.js` – Çark, quiz, meydan okuma ve skor pano işlevselliğini yönetir.
+- `script.js` – Öğrenci kayıtları, puan panosu, oyun menüsü geçişleri ve tüm mini oyunların işlevselliğini yönetir.
 
 ## Nasıl Çalıştırılır?
 
@@ -22,9 +22,10 @@ Bu depo, 5. sınıf öğrencileri için hazırlanan projeksiyon dostu "Neşeli �
 ## İçerik Güncelleme İpuçları
 
 - Yeni kelimeler eklemek için `script.js` dosyasındaki `vocabulary` dizisine yeni nesneler ekleyin.
-- Quiz sorularını artırmak için `quizQuestions` dizisine yeni sorular ekleyebilirsiniz.
+- Kelime avı oyununun havuzuna yeni sözcükler eklemek için yine `vocabulary` dizisini kullanın; rastgele seçilip karıştırılır.
 - Sınıf meydan okumalarını `challenges` dizisinde düzenleyin veya yenilerini ekleyin.
-- Takım isimleri varsayılan olarak "Takım A", "Takım B" ve "Takım C" şeklindedir; `teamNames` dizisini düzenleyerek değiştirebilirsiniz.
+- Emoji hikâyeleri ve yönlendirme cümlelerini `emojiStories` dizisine ekleyerek çeşitlendirebilirsiniz.
+- Öğrenci listesi sınıfta girildiği için varsayılan isim bulunmaz; projeksiyon öncesi öğrencileri eklemeyi unutmayın.
 
 ## Test / Kontrol
 

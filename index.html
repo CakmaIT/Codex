@@ -13,17 +13,73 @@
     />
   </head>
   <body>
+    <div class="floating-shapes">
+      <span class="shape shape-one"></span>
+      <span class="shape shape-two"></span>
+      <span class="shape shape-three"></span>
+      <span class="shape shape-four"></span>
+    </div>
+
     <div class="app">
       <header>
         <h1>Neşeli İngilizce</h1>
-        <p>Projeksiyonla sınıfı hareketlendirecek mini oyunlar!</p>
+        <p>Projeksiyonla sınıfı hareketlendirecek rengârenk oyun alanı!</p>
       </header>
 
-      <main>
-        <section class="card bright" id="flashcard-section">
+      <section class="card soft" id="roster-section">
+        <div class="section-header">
+          <h2>👥 Öğrenci Listesi</h2>
+          <p>Öğrencilerini ekle, oyunlarda rastgele seçilsin ve puan toplasın.</p>
+        </div>
+        <form id="student-form" class="student-form">
+          <input
+            type="text"
+            id="student-name"
+            name="student-name"
+            placeholder="Öğrenci adı yaz..."
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Ekle</button>
+        </form>
+        <div class="student-actions">
+          <button id="random-student" type="button">🎲 Rastgele Öğrenci</button>
+          <div class="selected-student" id="selected-student">Hazır olan var mı?</div>
+        </div>
+        <div class="student-tags" id="student-tags"></div>
+      </section>
+
+      <section class="card bright" id="scoreboard-section">
+        <div class="section-header">
+          <h2>🏆 Puan Panosu</h2>
+          <p>Katılımı ödüllendir, sınıf enerjisini yüksek tut!</p>
+        </div>
+        <div class="scoreboard" id="scoreboard"></div>
+        <div class="score-controls">
+          <select id="score-student"></select>
+          <button data-change="1" class="score-btn">+1</button>
+          <button data-change="-1" class="score-btn">-1</button>
+          <button id="reset-scores">Sıfırla</button>
+        </div>
+      </section>
+
+      <nav class="game-menu" aria-label="Oyun menüsü">
+        <button class="menu-btn active" data-target="flashcard-panel">🎡 Kelime Çarkı</button>
+        <button class="menu-btn" data-target="quiz-panel">🧠 Hızlı Eşleştirme</button>
+        <button class="menu-btn" data-target="challenge-panel">🎭 Sınıf Görevleri</button>
+        <button class="menu-btn" data-target="scramble-panel">🔤 Kelime Avı</button>
+        <button class="menu-btn" data-target="emoji-panel">🌈 Emoji Hikâyesi</button>
+      </nav>
+
+      <main class="panels">
+        <section class="card bright panel active" id="flashcard-panel">
+          <div class="panel-art">
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f38a.svg" alt="konfeti" />
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f308.svg" alt="gökkuşağı" />
+          </div>
           <div class="section-header">
-            <h2>🎉 Kelime Çarkı</h2>
-            <p>Takımı seç, çarkı çevir ve kelimeyi sınıfa tanıt!</p>
+            <h2>🎡 Kelime Çarkı</h2>
+            <p>Çarkı çevir, kelimeyi anlat ve sınıfı coştur!</p>
           </div>
           <div class="flashcard">
             <span class="category" id="flashcard-category">Kategori</span>
@@ -31,59 +87,91 @@
             <p id="flashcard-meaning">Başlamak için çarka bas!</p>
           </div>
           <div class="controls">
-            <label for="team-select">Takım:</label>
-            <select id="team-select">
-              <option value="Sunshines">Sunshines</option>
-              <option value="Rainbows">Rainbows</option>
-              <option value="Stars">Stars</option>
-              <option value="Heroes">Heroes</option>
-            </select>
             <button id="spin-btn">Çarkı Çevir</button>
+            <button id="flashcard-student-btn">👩‍🎓 Sıradaki Kim?</button>
           </div>
+          <p class="callout" id="flashcard-student">Öğrenci seçmek için listeden ekleme yap.</p>
         </section>
 
-        <section class="card soft" id="quiz-section">
+        <section class="card soft panel" id="quiz-panel">
+          <div class="panel-art">
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f52e.svg" alt="kristal" />
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2728.svg" alt="ışıltı" />
+          </div>
           <div class="section-header">
             <h2>🧠 Hızlı Eşleştirme</h2>
-            <p>Doğru Türkçe anlamını seç. Takımın puan kazansın!</p>
+            <p>Doğru Türkçe anlamını seç, yıldızları topla!</p>
           </div>
           <div class="quiz">
             <h3 id="quiz-question">Kelimeyi tahmin et!</h3>
             <div class="options" id="quiz-options"></div>
             <div class="quiz-feedback" id="quiz-feedback">&nbsp;</div>
           </div>
-          <button id="new-quiz-btn">Yeni Soru</button>
+          <div class="controls">
+            <button id="new-quiz-btn">Yeni Soru</button>
+            <button id="quiz-student-btn">🎯 Kim cevaplayacak?</button>
+          </div>
+          <p class="callout" id="quiz-student">Bir öğrenci seçmek için listeden ekleme yap.</p>
         </section>
 
-        <section class="card bright" id="challenge-section">
+        <section class="card bright panel" id="challenge-panel">
+          <div class="panel-art">
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3ad.svg" alt="maske" />
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f389.svg" alt="konfeti" />
+          </div>
           <div class="section-header">
-            <h2>🎭 Sınıf Mücadelesi</h2>
+            <h2>🎭 Sınıf Görevleri</h2>
             <p>Enerji dolu görevleri seç, tüm sınıf katılsın!</p>
           </div>
           <div class="challenge" id="challenge-display">
             <h3>Hazır ol!</h3>
             <p>Bir göreve hazır mısın?</p>
           </div>
-          <button id="new-challenge-btn">Görev Getir</button>
+          <div class="controls">
+            <button id="new-challenge-btn">Görev Getir</button>
+            <button id="challenge-student-btn">🎤 Lider Kim?</button>
+          </div>
+          <p class="callout" id="challenge-student">Göreve lider olacak öğrenciyi seçelim!</p>
         </section>
 
-        <section class="card soft" id="scoreboard-section">
+        <section class="card soft panel" id="scramble-panel">
+          <div class="panel-art">
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f9e9.svg" alt="yapboz" />
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f680.svg" alt="roket" />
+          </div>
           <div class="section-header">
-            <h2>🏆 Takım Puanları</h2>
-            <p>Takımları alkışla, başarılarını takip et!</p>
+            <h2>🔤 Kelime Avı</h2>
+            <p>Harflere bak, kelimeyi çöz ve puanı kap!</p>
           </div>
-          <div class="scoreboard" id="scoreboard"></div>
-          <div class="score-controls">
-            <select id="score-team">
-              <option value="Sunshines">Sunshines</option>
-              <option value="Rainbows">Rainbows</option>
-              <option value="Stars">Stars</option>
-              <option value="Heroes">Heroes</option>
-            </select>
-            <button data-change="1" class="score-btn">+1</button>
-            <button data-change="-1" class="score-btn">-1</button>
-            <button id="reset-scores">Sıfırla</button>
+          <div class="scramble">
+            <p class="scramble-word" id="scramble-word">Karıştırılmış kelime burada!</p>
+            <div class="scramble-hint" id="scramble-hint">İpucu: ...</div>
           </div>
+          <div class="controls">
+            <button id="new-scramble-btn">Yeni Kelime</button>
+            <button id="scramble-reveal-btn">Cevabı Göster</button>
+          </div>
+          <p class="callout" id="scramble-answer">Hazır olduğunda cevabı görmek için butona bas.</p>
+        </section>
+
+        <section class="card bright panel" id="emoji-panel">
+          <div class="panel-art">
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3a8.svg" alt="palet" />
+            <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f423.svg" alt="civciv" />
+          </div>
+          <div class="section-header">
+            <h2>🌈 Emoji Hikâyesi</h2>
+            <p>Emojilerle mini bir İngilizce hikâye kuralım!</p>
+          </div>
+          <div class="emoji-story">
+            <div class="emoji-set" id="emoji-set">😀✨🍀</div>
+            <p id="emoji-prompt">Emojilere bakarak bir hikâye anlat.</p>
+          </div>
+          <div class="controls">
+            <button id="new-emoji-btn">Yeni Emojiler</button>
+            <button id="emoji-student-btn">📣 Kim Anlatacak?</button>
+          </div>
+          <p class="callout" id="emoji-student">Emojilere can katacak öğrenciyi seç!</p>
         </section>
       </main>
 

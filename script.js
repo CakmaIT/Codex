@@ -111,38 +111,99 @@ const prompts = [
   "Takımınla birlikte en komik sınıf anınızı paylaşın."
 ];
 
-const teams = ["Sunshines", "Rainbows", "Stars", "Heroes"];
+const emojiStories = [
+  {
+    emojis: "🚀👩‍🚀🪐",
+    prompt: "Bir uzay macerası anlat."
+  },
+  {
+    emojis: "🍎📚🎒",
+    prompt: "Okuldaki en eğlenceli günü hikâyeleştir."
+  },
+  {
+    emojis: "🎤🎵🌟",
+    prompt: "Bir yetenek gösterisi düşün ve anlat."
+  },
+  {
+    emojis: "🏖️☀️🧃",
+    prompt: "Yaz tatilindeki bir anıyı paylaş."
+  },
+  {
+    emojis: "🐶🚲💨",
+    prompt: "Hayvan arkadaşınla yaptığın bir macerayı anlat."
+  },
+  {
+    emojis: "🎢🎠🍿",
+    prompt: "Lunaparktaki en heyecanlı anı canlandır."
+  },
+  {
+    emojis: "🏆⚽️🎯",
+    prompt: "Takımınla kazandığın bir maçı anlat."
+  }
+];
+
+const students = [];
+const scores = {};
+
+let lastWordIndex = null;
+let currentQuizAnswer = null;
+let currentScrambleWord = null;
+let lastPickedStudent = null;
 
 const flashcardCategory = document.getElementById("flashcard-category");
 const flashcardWord = document.getElementById("flashcard-word");
 const flashcardMeaning = document.getElementById("flashcard-meaning");
+const flashcardStudent = document.getElementById("flashcard-student");
+const flashcardStudentBtn = document.getElementById("flashcard-student-btn");
 const spinBtn = document.getElementById("spin-btn");
+
 const quizQuestion = document.getElementById("quiz-question");
 const quizOptionsContainer = document.getElementById("quiz-options");
 const quizFeedback = document.getElementById("quiz-feedback");
 const newQuizBtn = document.getElementById("new-quiz-btn");
+const quizStudent = document.getElementById("quiz-student");
+const quizStudentBtn = document.getElementById("quiz-student-btn");
+
 const challengeDisplay = document.getElementById("challenge-display");
 const newChallengeBtn = document.getElementById("new-challenge-btn");
+const challengeStudent = document.getElementById("challenge-student");
+const challengeStudentBtn = document.getElementById("challenge-student-btn");
+
+const scrambleWord = document.getElementById("scramble-word");
+const scrambleHint = document.getElementById("scramble-hint");
+const scrambleAnswer = document.getElementById("scramble-answer");
+const newScrambleBtn = document.getElementById("new-scramble-btn");
+const scrambleRevealBtn = document.getElementById("scramble-reveal-btn");
+
+const emojiSet = document.getElementById("emoji-set");
+const emojiPrompt = document.getElementById("emoji-prompt");
+const newEmojiBtn = document.getElementById("new-emoji-btn");
+const emojiStudent = document.getElementById("emoji-student");
+const emojiStudentBtn = document.getElementById("emoji-student-btn");
+
 const scoreboardContainer = document.getElementById("scoreboard");
-const scoreTeamSelect = document.getElementById("score-team");
+const scoreSelect = document.getElementById("score-student");
 const scoreButtons = document.querySelectorAll(".score-btn");
 const resetScoresBtn = document.getElementById("reset-scores");
 
-let lastWordIndex = null;
-let currentQuizAnswer = null;
-const scores = Object.fromEntries(teams.map((team) => [team, 0]));
+const studentForm = document.getElementById("student-form");
+const studentInput = document.getElementById("student-name");
+const studentTags = document.getElementById("student-tags");
+const randomStudentBtn = document.getElementById("random-student");
+const selectedStudentDisplay = document.getElementById("selected-student");
+
+const menuButtons = document.querySelectorAll(".menu-btn");
+const panels = document.querySelectorAll(".panel");
 
 function shuffle(array) {
   return array
-    .map((item) => ({ sort: Math.random(), value: item }))
+    .map((item) => ({ value: item, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map((item) => item.value);
 }
 
 function pickRandomWord() {
-  if (vocabulary.length === 0) {
-    return null;
-  }
+  if (vocabulary.length === 0) return null;
 
   let index;
   do {
@@ -211,42 +272,254 @@ function updateChallenge() {
   `;
 }
 
+function scrambleWordText(word) {
+  const letters = word.replace(/\s+/g, "").split("");
+  return shuffle(letters)
+    .map((letter) => letter.toUpperCase())
+    .join(" ");
+}
+
+function updateScramble() {
+  const selection = pickRandomWord();
+  if (!selection) return;
+
+  currentScrambleWord = selection.word;
+  const scrambled = scrambleWordText(selection.word);
+  scrambleWord.textContent = scrambled;
+  scrambleHint.textContent = `İpucu: ${selection.category}`;
+  scrambleAnswer.textContent = "Hazır olduğunda cevabı görmek için butona bas.";
+}
+
+function revealScramble() {
+  if (!currentScrambleWord) return;
+  scrambleAnswer.textContent = `Cevap: ${currentScrambleWord}`;
+}
+
+function updateEmojiStory() {
+  const story = emojiStories[Math.floor(Math.random() * emojiStories.length)];
+  emojiSet.textContent = story.emojis;
+  emojiPrompt.textContent = story.prompt;
+}
+
 function renderScoreboard() {
   scoreboardContainer.innerHTML = "";
-  teams.forEach((team) => {
+
+  if (students.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-state";
+    empty.textContent = "Önce öğrenci ekleyerek puan toplamaya başlayın.";
+    scoreboardContainer.appendChild(empty);
+    return;
+  }
+
+  students.forEach((student) => {
     const card = document.createElement("div");
     card.className = "score-card";
     card.innerHTML = `
-      <h3>${team}</h3>
-      <p>${scores[team]}</p>
+      <h3>${student}</h3>
+      <p>${scores[student] ?? 0}</p>
     `;
     scoreboardContainer.appendChild(card);
   });
 }
 
-function changeScore(team, delta) {
-  scores[team] = Math.max(0, scores[team] + delta);
+function updateScoreSelect() {
+  scoreSelect.innerHTML = "";
+
+  students.forEach((student) => {
+    const option = document.createElement("option");
+    option.value = student;
+    option.textContent = student;
+    scoreSelect.appendChild(option);
+  });
+
+  scoreSelect.disabled = students.length === 0;
+  scoreButtons.forEach((button) => {
+    button.disabled = students.length === 0;
+  });
+  resetScoresBtn.disabled = students.length === 0;
+
+  if (students.length > 0) {
+    scoreSelect.value = students[students.length - 1];
+  }
+}
+
+function changeScore(student, delta) {
+  if (!student) return;
+  scores[student] = Math.max(0, (scores[student] ?? 0) + delta);
   renderScoreboard();
 }
+
+function resetScores() {
+  students.forEach((student) => {
+    scores[student] = 0;
+  });
+  renderScoreboard();
+}
+
+function renderStudents() {
+  studentTags.innerHTML = "";
+
+  if (students.length === 0) {
+    const info = document.createElement("p");
+    info.className = "empty-state";
+    info.textContent = "Sahneye çıkacak ilk öğrenciyi ekleyin.";
+    studentTags.appendChild(info);
+    return;
+  }
+
+  students.forEach((student) => {
+    const tag = document.createElement("span");
+    tag.className = "student-tag";
+    tag.innerHTML = `
+      ${student}
+      <button type="button" class="remove" data-remove="${student}">×</button>
+    `;
+    studentTags.appendChild(tag);
+  });
+}
+
+function addStudent(name) {
+  const trimmed = name.trim();
+  if (!trimmed) return;
+
+  const formatted =
+    trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  if (students.includes(formatted)) {
+    studentInput.value = "";
+    studentInput.focus();
+    return;
+  }
+
+  students.push(formatted);
+  scores[formatted] = scores[formatted] ?? 0;
+  renderStudents();
+  renderScoreboard();
+  updateScoreSelect();
+  studentInput.value = "";
+  studentInput.focus();
+}
+
+function removeStudent(name) {
+  const index = students.indexOf(name);
+  if (index === -1) return;
+
+  students.splice(index, 1);
+  delete scores[name];
+
+  if (lastPickedStudent === name) {
+    lastPickedStudent = null;
+  }
+
+  renderStudents();
+  renderScoreboard();
+  updateScoreSelect();
+  selectedStudentDisplay.textContent = students.length
+    ? "Hazır olan var mı?"
+    : "Öğrenci ekleyerek başlayın!";
+
+  if (students.length === 0) {
+    flashcardStudent.textContent = "Öğrenci seçmek için listeden ekleme yap.";
+    quizStudent.textContent = "Bir öğrenci seçmek için listeden ekleme yap.";
+    challengeStudent.textContent = "Göreve lider olacak öğrenciyi seçelim!";
+    emojiStudent.textContent = "Emojilere can katacak öğrenciyi seç!";
+  }
+}
+
+function pickRandomStudent() {
+  if (students.length === 0) {
+    return null;
+  }
+
+  let student;
+  do {
+    student = students[Math.floor(Math.random() * students.length)];
+  } while (students.length > 1 && student === lastPickedStudent);
+
+  lastPickedStudent = student;
+  return student;
+}
+
+function announceRandomStudent(targetElement) {
+  const student = pickRandomStudent();
+  if (!student) {
+    targetElement.textContent = "Öğrenci ekleyerek seçim yapabilirsiniz.";
+    return;
+  }
+
+  targetElement.textContent = `${student}! Hazırsan sahne senin ✨`;
+}
+
+function handleMenuClick(event) {
+  const button = event.currentTarget;
+  const target = button.dataset.target;
+
+  menuButtons.forEach((btn) => btn.classList.remove("active"));
+  panels.forEach((panel) => panel.classList.remove("active"));
+
+  button.classList.add("active");
+  document.getElementById(target).classList.add("active");
+}
+
+studentForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  addStudent(studentInput.value);
+});
+
+studentTags.addEventListener("click", (event) => {
+  const button = event.target;
+  if (button.matches("[data-remove]")) {
+    removeStudent(button.dataset.remove);
+  }
+});
+
+randomStudentBtn.addEventListener("click", () => {
+  const student = pickRandomStudent();
+  selectedStudentDisplay.textContent = student
+    ? `${student}! Bugünün yıldızı sensin!`
+    : "Öğrenci ekleyerek seçim yapabilirsiniz.";
+});
+
+flashcardStudentBtn.addEventListener("click", () =>
+  announceRandomStudent(flashcardStudent)
+);
+
+quizStudentBtn.addEventListener("click", () =>
+  announceRandomStudent(quizStudent)
+);
+
+challengeStudentBtn.addEventListener("click", () =>
+  announceRandomStudent(challengeStudent)
+);
+
+emojiStudentBtn.addEventListener("click", () =>
+  announceRandomStudent(emojiStudent)
+);
 
 spinBtn.addEventListener("click", updateFlashcard);
 newQuizBtn.addEventListener("click", createQuizQuestion);
 newChallengeBtn.addEventListener("click", updateChallenge);
+newScrambleBtn.addEventListener("click", updateScramble);
+scrambleRevealBtn.addEventListener("click", revealScramble);
+newEmojiBtn.addEventListener("click", updateEmojiStory);
 
 scoreButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    const team = scoreTeamSelect.value;
-    const delta = Number(button.dataset.change);
-    changeScore(team, delta);
+    changeScore(scoreSelect.value, Number(button.dataset.change));
   });
 });
 
-resetScoresBtn.addEventListener("click", () => {
-  teams.forEach((team) => (scores[team] = 0));
-  renderScoreboard();
+resetScoresBtn.addEventListener("click", resetScores);
+
+menuButtons.forEach((button) => {
+  button.addEventListener("click", handleMenuClick);
 });
 
-// Başlangıç durumunu hazırla
+renderStudents();
 renderScoreboard();
-updateChallenge();
+updateScoreSelect();
+updateFlashcard();
 createQuizQuestion();
+updateChallenge();
+updateScramble();
+updateEmojiStory();
