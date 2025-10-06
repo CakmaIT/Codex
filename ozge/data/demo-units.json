@@ -1,0 +1,52 @@
+[
+  {
+    "id": "welcome",
+    "title": "Welcome to English",
+    "modeMap": {"QUIZ": true, "DRAW": true, "SPEAK": true, "STORY": true},
+    "vocabulary": [
+      {"word": "greet", "definition": "to say hello", "difficulty": "easy"},
+      {"word": "introduce", "definition": "to present yourself", "difficulty": "easy"},
+      {"word": "classroom", "definition": "a place for learning", "difficulty": "easy"}
+    ],
+    "sentences": [
+      "Hello, my name is ____.",
+      "Welcome to our classroom!",
+      "Can you introduce your partner?"
+    ],
+    "story": {
+      "panels": [
+        "The class meets their new teacher.",
+        "They share greetings from around the world.",
+        "Everyone learns to introduce a friend."
+      ],
+      "question": "What do the students learn today?",
+      "options": ["Greetings", "Math", "Sports", "Art"],
+      "answer": "Greetings"
+    }
+  },
+  {
+    "id": "adventure",
+    "title": "Adventure Words",
+    "modeMap": {"QUIZ": true, "PUZZLE": true, "STORY": true, "BONUS": true},
+    "vocabulary": [
+      {"word": "journey", "definition": "a long trip", "difficulty": "medium"},
+      {"word": "discover", "definition": "to find something new", "difficulty": "medium"},
+      {"word": "courage", "definition": "to be brave", "difficulty": "hard"}
+    ],
+    "sentences": [
+      "The hero will discover a hidden island.",
+      "Show courage when you speak.",
+      "Describe your favorite journey."
+    ],
+    "story": {
+      "panels": [
+        "A map glows with hidden paths.",
+        "Students vote on the bravest explorer.",
+        "They plan a class journey of words."
+      ],
+      "question": "Why do they need courage?",
+      "options": ["To solve math", "To speak up", "To sleep", "To cook"],
+      "answer": "To speak up"
+    }
+  }
+]

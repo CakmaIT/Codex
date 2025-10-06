@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Özge – Classroom Edition | Teacher Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-screen="teacher">
+  <div id="app" class="app teacher">
+    <header class="topbar" role="banner">
+      <div class="brand">
+        <svg class="icon"><use href="assets/icons.svg#logo"></use></svg>
+        <div>
+          <h1>Özge – Classroom Edition</h1>
+          <span id="active-class-label" class="badge">Class: 5A</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="open-projector" class="primary" aria-label="Open projector view">Open Projector</button>
+        <button id="toggle-freeze" class="ghost" aria-label="Freeze inputs">Freeze</button>
+        <button id="emergency-stop" class="danger" aria-label="Emergency stop">Emergency STOP</button>
+      </div>
+    </header>
+
+    <main class="dashboard" role="main">
+      <section class="panel status">
+        <h2>Session Status</h2>
+        <div class="status-grid">
+          <div><label>Topic</label><span id="status-topic">Welcome Pack</span></div>
+          <div><label>Active Mode</label><span id="status-mode">HOME</span></div>
+          <div><label>Timer</label><span id="status-timer">00:00</span></div>
+          <div><label>Group</label><span id="status-group">A</span></div>
+        </div>
+        <div class="scoreboard" aria-live="polite"></div>
+      </section>
+
+      <section class="panel modes">
+        <h2>Live Controls</h2>
+        <div class="mode-buttons" role="tablist">
+          <button data-mode="QUIZ" class="mode-btn">Quiz</button>
+          <button data-mode="PUZZLE" class="mode-btn">Puzzle</button>
+          <button data-mode="SPEAK" class="mode-btn">Speaking</button>
+          <button data-mode="STORY" class="mode-btn">Story</button>
+          <button data-mode="DRAW" class="mode-btn">Draw &amp; Spell</button>
+          <button data-mode="BONUS" class="mode-btn">Bonus Blitz</button>
+        </div>
+        <div class="mode-stage" id="mode-stage" tabindex="0" aria-live="polite"></div>
+      </section>
+
+      <section class="panel tabs" role="region" aria-label="Teacher tabs">
+        <div class="tablist">
+          <button data-tab="CONTENT_MANAGER" class="tab active">Content</button>
+          <button data-tab="ANALYTICS" class="tab">Analytics</button>
+          <button data-tab="LOG" class="tab">Lesson Log</button>
+          <button data-tab="SETTINGS" class="tab">Settings</button>
+          <button data-tab="CLASS" class="tab">Class</button>
+        </div>
+        <div class="tab-panels">
+          <section id="tab-CONTENT_MANAGER" class="tab-panel active" aria-label="Content manager"></section>
+          <section id="tab-ANALYTICS" class="tab-panel" aria-label="Weekly analytics"></section>
+          <section id="tab-LOG" class="tab-panel" aria-label="Lesson log"></section>
+          <section id="tab-SETTINGS" class="tab-panel" aria-label="Settings"></section>
+          <section id="tab-CLASS" class="tab-panel" aria-label="Class management"></section>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar" aria-label="Class sidebar">
+      <section class="panel roster">
+        <h2>Groups &amp; Avatars</h2>
+        <ul id="group-list" class="avatar-list"></ul>
+        <button id="calm-mode" class="ghost">Calm Down Mode</button>
+      </section>
+      <section class="panel behavior">
+        <h2>Behavior Controls</h2>
+        <div class="behavior-actions">
+          <button data-behavior="good" class="good">🟢 Good</button>
+          <button data-behavior="warning" class="warning">🟠 Warning</button>
+          <button data-behavior="penalty" class="penalty">🔴 Penalty</button>
+        </div>
+        <div id="behavior-log" class="behavior-log"></div>
+      </section>
+      <section class="panel bonus">
+        <h2>Bonus Mini-Game</h2>
+        <label>Duration <input id="bonus-duration" type="number" min="20" max="90" value="30"> s</label>
+        <button id="start-bonus" class="primary">Start Bonus Blitz</button>
+        <label><input type="checkbox" id="auto-bonus"> Auto trigger on good behavior</label>
+      </section>
+    </aside>
+  </div>
+
+  <div id="overlays" aria-live="assertive"></div>
+
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/bonus.js"></script>
+  <script src="js/ocr.js"></script>
+</body>
+</html>

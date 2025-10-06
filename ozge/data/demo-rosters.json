@@ -1,0 +1,22 @@
+{
+  "5A": {
+    "students": ["Ayşe", "Berk", "Cem", "Deniz", "Elif", "Fikret", "Gül", "Hakan"],
+    "schedule": ["Mon 09:00", "Wed 09:00", "Fri 09:00"],
+    "groups": {"A": ["Ayşe", "Berk"], "B": ["Cem", "Deniz"], "C": ["Elif", "Fikret"], "D": ["Gül", "Hakan"]}
+  },
+  "5B": {
+    "students": ["Irem", "Kaan", "Leyla", "Mert", "Naz", "Ozan", "Pelin", "Rüzgar"],
+    "schedule": ["Tue 10:00", "Thu 10:00"],
+    "groups": {"A": ["Irem", "Kaan"], "B": ["Leyla", "Mert"], "C": ["Naz", "Ozan"], "D": ["Pelin", "Rüzgar"]}
+  },
+  "5C": {
+    "students": ["Selin", "Tolga", "Umut", "Volkan", "Yaren", "Zehra"],
+    "schedule": ["Mon 11:00", "Thu 11:00"],
+    "groups": {"A": ["Selin", "Tolga"], "B": ["Umut", "Volkan"], "C": ["Yaren"], "D": ["Zehra"]}
+  },
+  "5D": {
+    "students": ["Ahmet", "Banu", "Canan", "Doruk", "Ece", "Fatih"],
+    "schedule": ["Wed 11:00"],
+    "groups": {"A": ["Ahmet", "Banu"], "B": ["Canan", "Doruk"], "C": ["Ece"], "D": ["Fatih"]}
+  }
+}

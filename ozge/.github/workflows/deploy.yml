@@ -1,0 +1,47 @@
+name: Deploy Özge Classroom
+
+on:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "0 2 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_EMAIL: ${{ secrets.GH_EMAIL }}
+      GH_REPO: ${{ secrets.GH_REPO }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Prepare and push repository
+        run: ./ozge/scripts/prepare_and_push.sh
+
+  deploy-gh-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_EMAIL: ${{ secrets.GH_EMAIL }}
+      GH_REPO: ${{ secrets.GH_REPO }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Push gh-pages snapshot
+        run: ./ozge/scripts/prepare_and_push.sh
+      - name: Publish summary
+        run: |
+          if [ -n "$GH_REPO" ]; then
+            slug="${GH_REPO#https://github.com/}"
+            slug="${slug%.git}"
+            echo "Deployment URL: https://${slug%%/*}.github.io/${slug##*/}/" >> "$GITHUB_STEP_SUMMARY"
+          fi

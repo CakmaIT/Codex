@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Özge – Classroom Edition | Projector</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-screen="projector">
+  <div id="projector" class="app projector">
+    <header class="projector-header">
+      <div>
+        <h1 id="projector-class">Class 5A</h1>
+        <p id="projector-topic">Welcome Pack</p>
+      </div>
+      <div class="projector-timer" aria-live="polite">
+        <span id="projector-mode">HOME</span>
+        <span id="projector-timer">00:00</span>
+      </div>
+      <div class="projector-group">
+        <span>Group</span>
+        <strong id="projector-group-name">A</strong>
+      </div>
+    </header>
+
+    <main class="projector-stage" id="projector-stage" aria-live="polite"></main>
+
+    <footer class="projector-footer">
+      <div id="projector-scores" class="scoreboard"></div>
+      <div id="projector-behavior" class="behavior-banner" aria-live="assertive"></div>
+    </footer>
+  </div>
+
+  <div id="projector-overlays"></div>
+
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/bonus.js"></script>
+  <script src="js/ocr.js"></script>
+</body>
+</html>
