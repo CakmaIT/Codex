@@ -22,6 +22,7 @@ Bu depo, 5. sınıf öğrencileri için hazırlanan projeksiyon dostu "Neşeli �
 ## İçerik Güncelleme İpuçları
 
 - Yeni kelimeler eklemek için `script.js` dosyasındaki `vocabulary` dizisine yeni nesneler ekleyin.
+- Kelime çarkındaki renkli dilimler `vocabulary` dizisindeki `category` alanlarını temel alır; yeni kategoriler eklediğinizde çark otomatik güncellenir.
 - Kelime avı oyununun havuzuna yeni sözcükler eklemek için yine `vocabulary` dizisini kullanın; rastgele seçilip karıştırılır.
 - Sınıf meydan okumalarını `challenges` dizisinde düzenleyin veya yenilerini ekleyin.
 - Emoji hikâyeleri ve yönlendirme cümlelerini `emojiStories` dizisine ekleyerek çeşitlendirebilirsiniz.

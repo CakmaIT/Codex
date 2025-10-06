@@ -142,6 +142,15 @@ const emojiStories = [
   }
 ];
 
+const categoryIcons = {
+  People: "🧑‍🤝‍🧑",
+  Actions: "🏃",
+  Places: "🏫",
+  Feelings: "😊",
+  "School Life": "📚",
+  "Useful Phrases": "💬"
+};
+
 const students = [];
 const scores = {};
 
@@ -156,6 +165,7 @@ const flashcardMeaning = document.getElementById("flashcard-meaning");
 const flashcardStudent = document.getElementById("flashcard-student");
 const flashcardStudentBtn = document.getElementById("flashcard-student-btn");
 const spinBtn = document.getElementById("spin-btn");
+const wheel = document.getElementById("wheel");
 
 const quizQuestion = document.getElementById("quiz-question");
 const quizOptionsContainer = document.getElementById("quiz-options");
@@ -195,6 +205,24 @@ const selectedStudentDisplay = document.getElementById("selected-student");
 const menuButtons = document.querySelectorAll(".menu-btn");
 const panels = document.querySelectorAll(".panel");
 
+const wheelSegments = Array.from(
+  new Set(vocabulary.map((item) => item.category))
+);
+const wheelColors = [
+  "#ff8fab",
+  "#b388eb",
+  "#8ecae6",
+  "#a7f3d0",
+  "#ffcf99",
+  "#f497b5",
+  "#c4a7e7",
+  "#90dbf4"
+];
+const spinDuration = 3600;
+
+let isSpinning = false;
+let currentWheelRotation = 0;
+
 function shuffle(array) {
   return array
     .map((item) => ({ value: item, sort: Math.random() }))
@@ -214,13 +242,111 @@ function pickRandomWord() {
   return vocabulary[index];
 }
 
-function updateFlashcard() {
-  const word = pickRandomWord();
-  if (!word) return;
+function pickWordByCategory(category) {
+  if (!category) return pickRandomWord();
 
-  flashcardCategory.textContent = word.category;
-  flashcardWord.textContent = word.word;
-  flashcardMeaning.textContent = word.meaning;
+  const options = vocabulary.filter((item) => item.category === category);
+  if (options.length === 0) {
+    return pickRandomWord();
+  }
+
+  return options[Math.floor(Math.random() * options.length)];
+}
+
+function updateFlashcard(word = null) {
+  const selection = word ?? pickRandomWord();
+  if (!selection) return;
+
+  const wordIndex = vocabulary.indexOf(selection);
+  if (wordIndex !== -1) {
+    lastWordIndex = wordIndex;
+  }
+
+  flashcardCategory.textContent = selection.category;
+  flashcardWord.textContent = selection.word;
+  flashcardMeaning.textContent = selection.meaning;
+}
+
+function setupWheel() {
+  if (!wheel) return;
+
+  if (wheelSegments.length === 0) {
+    wheel.style.setProperty("--wheel-gradient", "#f3e7ff 0deg 360deg");
+    wheel.innerHTML = "";
+    wheel.style.transform = "rotate(0deg)";
+    return;
+  }
+
+  const segmentAngle = 360 / wheelSegments.length;
+  const gradient = wheelSegments
+    .map((_, index) => {
+      const start = index * segmentAngle;
+      const end = start + segmentAngle;
+      const color = wheelColors[index % wheelColors.length];
+      return `${color} ${start}deg ${end}deg`;
+    })
+    .join(", ");
+
+  wheel.style.setProperty("--wheel-gradient", gradient);
+  wheel.style.setProperty("--spin-duration", `${spinDuration}ms`);
+  wheel.innerHTML = "";
+
+  wheelSegments.forEach((category, index) => {
+    const label = document.createElement("span");
+    label.className = "wheel-label";
+    label.style.setProperty("--angle", index * segmentAngle);
+    const emoji = categoryIcons[category] ?? "🎯";
+    label.innerHTML = `<span><span class="wheel-icon">${emoji}</span>${category}</span>`;
+    wheel.appendChild(label);
+  });
+
+  currentWheelRotation = 0;
+  wheel.style.transform = "rotate(0deg)";
+}
+
+function spinWheel() {
+  if (isSpinning || !wheel) return;
+
+  const segmentAngle = 360 / wheelSegments.length;
+  if (!Number.isFinite(segmentAngle)) {
+    updateFlashcard();
+    return;
+  }
+
+  isSpinning = true;
+  spinBtn.disabled = true;
+  flashcardCategory.textContent = "Çark dönüyor";
+  flashcardWord.textContent = "🎡";
+  flashcardMeaning.textContent = "Kategori seçiliyor...";
+  wheel.classList.add("spinning");
+
+  const selectedIndex = Math.floor(Math.random() * wheelSegments.length);
+  const fullRotations = Math.floor(Math.random() * 3) + 4;
+  const targetRotation =
+    fullRotations * 360 + selectedIndex * segmentAngle + segmentAngle / 2;
+
+  currentWheelRotation += targetRotation;
+
+  // Force layout recalculation to ensure transition runs
+  void wheel.offsetWidth;
+  wheel.style.transform = `rotate(${currentWheelRotation}deg)`;
+
+  const handleTransitionEnd = () => {
+    clearTimeout(fallbackTimeout);
+    const category = wheelSegments[selectedIndex];
+    const word = pickWordByCategory(category);
+    updateFlashcard(word);
+
+    isSpinning = false;
+    spinBtn.disabled = false;
+    wheel.classList.remove("spinning");
+
+    wheel.removeEventListener("transitionend", handleTransitionEnd);
+  };
+
+  const fallbackTimeout = setTimeout(handleTransitionEnd, spinDuration + 120);
+
+  wheel.addEventListener("transitionend", handleTransitionEnd);
 }
 
 function createQuizQuestion() {
@@ -496,7 +622,7 @@ emojiStudentBtn.addEventListener("click", () =>
   announceRandomStudent(emojiStudent)
 );
 
-spinBtn.addEventListener("click", updateFlashcard);
+spinBtn.addEventListener("click", spinWheel);
 newQuizBtn.addEventListener("click", createQuizQuestion);
 newChallengeBtn.addEventListener("click", updateChallenge);
 newScrambleBtn.addEventListener("click", updateScramble);
@@ -515,6 +641,7 @@ menuButtons.forEach((button) => {
   button.addEventListener("click", handleMenuClick);
 });
 
+setupWheel();
 renderStudents();
 renderScoreboard();
 updateScoreSelect();
