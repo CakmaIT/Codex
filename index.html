@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neşeli İngilizce - 5. Sınıf</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Neşeli İngilizce</h1>
+        <p>Projeksiyonla sınıfı hareketlendirecek mini oyunlar!</p>
+      </header>
+
+      <main>
+        <section class="card bright" id="flashcard-section">
+          <div class="section-header">
+            <h2>🎉 Kelime Çarkı</h2>
+            <p>Takımı seç, çarkı çevir ve kelimeyi sınıfa tanıt!</p>
+          </div>
+          <div class="flashcard">
+            <span class="category" id="flashcard-category">Kategori</span>
+            <h3 id="flashcard-word">Hazır mısın?</h3>
+            <p id="flashcard-meaning">Başlamak için çarka bas!</p>
+          </div>
+          <div class="controls">
+            <label for="team-select">Takım:</label>
+            <select id="team-select">
+              <option value="Sunshines">Sunshines</option>
+              <option value="Rainbows">Rainbows</option>
+              <option value="Stars">Stars</option>
+              <option value="Heroes">Heroes</option>
+            </select>
+            <button id="spin-btn">Çarkı Çevir</button>
+          </div>
+        </section>
+
+        <section class="card soft" id="quiz-section">
+          <div class="section-header">
+            <h2>🧠 Hızlı Eşleştirme</h2>
+            <p>Doğru Türkçe anlamını seç. Takımın puan kazansın!</p>
+          </div>
+          <div class="quiz">
+            <h3 id="quiz-question">Kelimeyi tahmin et!</h3>
+            <div class="options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback">&nbsp;</div>
+          </div>
+          <button id="new-quiz-btn">Yeni Soru</button>
+        </section>
+
+        <section class="card bright" id="challenge-section">
+          <div class="section-header">
+            <h2>🎭 Sınıf Mücadelesi</h2>
+            <p>Enerji dolu görevleri seç, tüm sınıf katılsın!</p>
+          </div>
+          <div class="challenge" id="challenge-display">
+            <h3>Hazır ol!</h3>
+            <p>Bir göreve hazır mısın?</p>
+          </div>
+          <button id="new-challenge-btn">Görev Getir</button>
+        </section>
+
+        <section class="card soft" id="scoreboard-section">
+          <div class="section-header">
+            <h2>🏆 Takım Puanları</h2>
+            <p>Takımları alkışla, başarılarını takip et!</p>
+          </div>
+          <div class="scoreboard" id="scoreboard"></div>
+          <div class="score-controls">
+            <select id="score-team">
+              <option value="Sunshines">Sunshines</option>
+              <option value="Rainbows">Rainbows</option>
+              <option value="Stars">Stars</option>
+              <option value="Heroes">Heroes</option>
+            </select>
+            <button data-change="1" class="score-btn">+1</button>
+            <button data-change="-1" class="score-btn">-1</button>
+            <button id="reset-scores">Sıfırla</button>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>Hazırlayan: Neşeli sınıf gönüllüleri 💛</p>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
