@@ -1,0 +1,16 @@
+{
+  "name": "ozge-classroom",
+  "version": "1.0.0",
+  "description": "Offline classroom dashboard for Özge – Classroom Edition",
+  "main": "exe/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "package:win": "electron-packager . \"Ozge Classroom\" --platform=win32 --arch=x64 --out=dist --overwrite --app-version=1.0.0 --prune=true --ignore=\"dist\"",
+    "package:linux": "electron-packager . \"Ozge Classroom\" --platform=linux --arch=x64 --out=dist --overwrite --app-version=1.0.0 --prune=true --ignore=\"dist\""
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-packager": "^17.1.2"
+  }
+}

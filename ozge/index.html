@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Özge – Classroom Edition • Teacher Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="teacher">
+  <div id="splash" class="view view-active" aria-hidden="false">
+    <div class="splash-inner">
+      <svg class="logo" aria-hidden="true">
+        <use href="assets/icons.svg#logo"></use>
+      </svg>
+      <h1>Özge – Classroom Edition</h1>
+      <p class="tagline">Offline-ready classroom control hub</p>
+      <button id="enter-app" class="primary" aria-label="Enter dashboard">Enter Classroom</button>
+    </div>
+  </div>
+
+  <header id="main-header" class="hidden" aria-label="Teacher controls">
+    <div class="brand">
+      <svg aria-hidden="true"><use href="assets/icons.svg#logo"></use></svg>
+      <span>Özge – Teacher Dashboard</span>
+    </div>
+    <div class="class-switcher" role="navigation" aria-label="Class selection">
+      <button class="class-chip" data-class="5A">5A</button>
+      <button class="class-chip" data-class="5B">5B</button>
+      <button class="class-chip" data-class="5C">5C</button>
+      <button class="class-chip" data-class="5D">5D</button>
+    </div>
+    <div class="session-controls">
+      <span class="active-class" aria-live="polite">Class: <strong>—</strong></span>
+      <button id="start-projector" class="ghost" aria-label="Open projector view">Projector View</button>
+      <button id="emergency-stop" class="danger" aria-label="Emergency stop">Emergency STOP</button>
+    </div>
+  </header>
+
+  <main id="main" class="hidden" tabindex="-1">
+    <nav id="teacher-tabs" aria-label="Teacher navigation">
+      <button data-tab="HOME" class="tab active">Home</button>
+      <button data-tab="QUIZ" class="tab">Quiz</button>
+      <button data-tab="PUZZLE" class="tab">Puzzle</button>
+      <button data-tab="SPEAK" class="tab">Speak</button>
+      <button data-tab="STORY" class="tab">Story</button>
+      <button data-tab="DRAW" class="tab">Draw &amp; Spell</button>
+      <button data-tab="BONUS" class="tab">Bonus Game</button>
+      <button data-tab="CONTENT_MANAGER" class="tab">Content</button>
+      <button data-tab="ANALYTICS" class="tab">Analytics</button>
+      <button data-tab="LOG" class="tab">Lesson Log</button>
+      <button data-tab="SETTINGS" class="tab">Settings</button>
+      <button data-tab="CLASS" class="tab">Class Admin</button>
+    </nav>
+
+    <section id="view-container" aria-live="polite">
+      <article id="view-HOME" class="view view-active" data-mode="HOME">
+        <header class="mode-header">
+          <div>
+            <h2>Home</h2>
+            <p class="active-topic">Topic: <span data-bind="topic">—</span></p>
+          </div>
+          <div class="status-pill">
+            <span>Timer</span>
+            <span data-bind="timer">00:00</span>
+          </div>
+        </header>
+        <div class="home-grid" role="list">
+          <button class="home-card" data-launch="QUIZ">Vocabulary</button>
+          <button class="home-card" data-launch="PUZZLE">Grammar</button>
+          <button class="home-card" data-launch="SPEAK">Speaking</button>
+          <button class="home-card" data-launch="STORY">Story</button>
+          <button class="home-card" data-launch="BONUS">Final Test</button>
+          <button class="home-card" data-launch="DRAW">Draw &amp; Spell</button>
+        </div>
+        <section class="scoreboard" aria-label="Group scores">
+          <header>
+            <h3>Groups</h3>
+            <button class="ghost" id="edit-avatars">Avatars</button>
+          </header>
+          <div class="groups" id="group-list"></div>
+        </section>
+      </article>
+
+      <article id="view-QUIZ" class="view" data-mode="QUIZ"></article>
+      <article id="view-PUZZLE" class="view" data-mode="PUZZLE"></article>
+      <article id="view-SPEAK" class="view" data-mode="SPEAK"></article>
+      <article id="view-STORY" class="view" data-mode="STORY"></article>
+      <article id="view-DRAW" class="view" data-mode="DRAW"></article>
+      <article id="view-BONUS" class="view" data-mode="BONUS"></article>
+      <article id="view-CONTENT_MANAGER" class="view" data-mode="CONTENT_MANAGER"></article>
+      <article id="view-ANALYTICS" class="view" data-mode="ANALYTICS"></article>
+      <article id="view-LOG" class="view" data-mode="LOG"></article>
+      <article id="view-SETTINGS" class="view" data-mode="SETTINGS"></article>
+      <article id="view-CLASS" class="view" data-mode="CLASS"></article>
+      <article id="view-RESULT" class="view" data-mode="RESULT"></article>
+    </section>
+  </main>
+
+  <div id="pin-dialog" role="dialog" aria-modal="true" hidden>
+    <div class="dialog">
+      <h2>Enter PIN</h2>
+      <p>This action requires verification.</p>
+      <input id="pin-input" type="password" maxlength="4" aria-label="PIN" autocomplete="one-time-code">
+      <div class="dialog-actions">
+        <button id="pin-cancel" class="ghost">Cancel</button>
+        <button id="pin-confirm" class="primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="group-card-template">
+    <article class="group-card" data-group="">
+      <header>
+        <span class="avatar" aria-hidden="true">😀</span>
+        <h4 data-field="name"></h4>
+      </header>
+      <dl>
+        <div><dt>Score</dt><dd data-field="score">0</dd></div>
+        <div><dt>Behavior</dt><dd data-field="behavior">Balanced</dd></div>
+      </dl>
+      <div class="behavior-controls" role="group" aria-label="Behavior controls">
+        <button data-action="positive">🟢</button>
+        <button data-action="warning">🟠</button>
+        <button data-action="penalty">🔴</button>
+      </div>
+      <button class="ghost" data-action="attendance">Attendance</button>
+    </article>
+  </template>
+
+  <script src="js/state.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/bonus.js"></script>
+  <script src="js/core.js"></script>
+</body>
+</html>

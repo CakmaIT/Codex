@@ -1,0 +1,26 @@
+{
+  "5A": [
+    {
+      "id": "u1",
+      "title": "Unit 1 – Classroom Language",
+      "modeMap": ["QUIZ", "DRAW", "SPEAK"],
+      "words": [
+        {"term": "pencil", "definition": "a tool for writing"},
+        {"term": "notebook", "definition": "a book of blank pages"},
+        {"term": "eraser", "definition": "a rubber for removing pencil marks"}
+      ],
+      "summary": [
+        "Students ask for help politely.",
+        "Review materials and classroom objects.",
+        "Practice short requests."
+      ],
+      "mcqs": [
+        {"question": "What do you use to write notes?", "options": ["pencil", "glue", "marker", "paint"], "answer": 0},
+        {"question": "Which word means clean mistakes?", "options": ["notebook", "eraser", "stapler", "board"], "answer": 1}
+      ]
+    }
+  ],
+  "5B": [],
+  "5C": [],
+  "5D": []
+}

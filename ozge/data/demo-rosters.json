@@ -1,0 +1,32 @@
+{
+  "5A": {
+    "groups": {
+      "A": ["Ada", "Baran", "Cem"],
+      "B": ["Deniz", "Elif", "Fikri"],
+      "C": ["Gul", "Harun", "Ipek"],
+      "D": ["Jale", "Kerem", "Lara"]
+    },
+    "schedule": ["Monday 09:00", "Wednesday 09:00"],
+    "attendance": {}
+  },
+  "5B": {
+    "groups": {
+      "E": ["Mert", "Naz", "Okan"],
+      "F": ["Peri", "Rana", "Sami"],
+      "G": ["Tuna", "Umut", "Vera"],
+      "H": ["Yasmin", "Zehra", "Ali"]
+    },
+    "schedule": ["Tuesday 11:00", "Thursday 11:00"],
+    "attendance": {}
+  },
+  "5C": {
+    "groups": {},
+    "schedule": [],
+    "attendance": {}
+  },
+  "5D": {
+    "groups": {},
+    "schedule": [],
+    "attendance": {}
+  }
+}

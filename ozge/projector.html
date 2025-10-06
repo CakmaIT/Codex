@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Özge – Classroom Edition • Projector View</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-role="projector">
+  <header class="projector-header">
+    <div class="projector-title">
+      <svg aria-hidden="true"><use href="assets/icons.svg#logo"></use></svg>
+      <h1>Özge – Projector View</h1>
+    </div>
+    <div class="projector-status">
+      <span data-field="class">Class —</span>
+      <span data-field="unit">Unit —</span>
+      <span data-field="timer">00:00</span>
+      <span data-field="group">Group —</span>
+    </div>
+  </header>
+
+  <main id="projector-main" aria-live="polite">
+    <section id="projector-home" class="projector-section active">
+      <div class="projector-cards">
+        <article class="projector-card" data-mode="QUIZ">
+          <h2>Vocabulary Challenge</h2>
+          <p>Sharpen your word power!</p>
+        </article>
+        <article class="projector-card" data-mode="PUZZLE">
+          <h2>Grammar Puzzle</h2>
+          <p>Arrange the tiles to reveal the sentence.</p>
+        </article>
+        <article class="projector-card" data-mode="SPEAK">
+          <h2>Speaking Spotlight</h2>
+          <p>Say it loud and proud.</p>
+        </article>
+        <article class="projector-card" data-mode="STORY">
+          <h2>Story Panel</h2>
+          <p>Read and respond.</p>
+        </article>
+        <article class="projector-card" data-mode="DRAW">
+          <h2>Draw &amp; Spell</h2>
+          <p>Sketch the word while spelling aloud.</p>
+        </article>
+        <article class="projector-card" data-mode="BONUS">
+          <h2>Bonus Blitz</h2>
+          <p>Double points in 30 seconds!</p>
+        </article>
+      </div>
+    </section>
+    <section id="projector-content" class="projector-section">
+      <header class="projector-mode-header">
+        <h2 data-field="mode">Mode</h2>
+        <p data-field="subtitle">Stay focused!</p>
+      </header>
+      <div id="projector-content-body"></div>
+    </section>
+    <section id="projector-approval" class="projector-section">
+      <div class="projector-await">
+        <svg aria-hidden="true"><use href="assets/icons.svg#hourglass"></use></svg>
+        <h2>Awaiting teacher approval…</h2>
+      </div>
+    </section>
+    <section id="projector-blackout" class="projector-section">
+      <div class="projector-blackout-message">
+        <h2>Screen temporarily hidden</h2>
+        <p>Please wait for the teacher.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="projector-footer">
+    <div class="avatars" id="projector-avatars"></div>
+    <div class="scores" id="projector-scores"></div>
+  </footer>
+
+  <script src="js/state.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/puzzle.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/bonus.js"></script>
+  <script src="js/core.js"></script>
+</body>
+</html>

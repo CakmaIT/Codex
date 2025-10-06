@@ -1,0 +1,55 @@
+name: Deploy Özge Classroom
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_EMAIL: ${{ secrets.GH_EMAIL }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GH_REPO: ${{ secrets.GH_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare and push
+        run: |
+          bash scripts/prepare_and_push.sh
+
+  deploy-gh-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      GH_EMAIL: ${{ secrets.GH_EMAIL }}
+      GIT_AUTHOR_NAME: ${{ secrets.GH_USERNAME }}
+      GIT_AUTHOR_EMAIL: ${{ secrets.GH_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "$GH_USERNAME"
+          git config user.email "$GH_EMAIL"
+      - name: Ensure gh-pages branch
+        run: |
+          git fetch origin gh-pages || true
+          git switch gh-pages || git switch -c gh-pages
+      - name: Push to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git push origin gh-pages
+      - name: Publish summary
+        run: |
+          echo "### Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "Latest site: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
