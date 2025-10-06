@@ -1,6 +1,30 @@
 (function () {
-  const stopwordsPromise = fetch("data/stopwords.json").then((r) => r.json());
+  const DEFAULT_STOPWORDS = [
+    "the",
+    "and",
+    "for",
+    "with",
+    "this",
+    "that",
+    "have",
+    "from",
+    "your",
+    "about",
+    "into",
+    "after",
+    "before",
+    "because",
+    "once",
+    "where",
+    "while",
+    "which",
+    "should",
+    "would",
+    "could"
+  ];
+
   let stopwordList = [];
+  let stopwordLoaded = false;
   let viewInitialized = false;
   let currentUnits = [];
 
@@ -81,9 +105,23 @@
     renderMapping(cls);
   }
 
+  async function ensureStopwords() {
+    if (stopwordLoaded) return stopwordList;
+    try {
+      const response = await fetch("data/stopwords.json");
+      if (!response.ok) throw new Error("stopwords fetch failed");
+      stopwordList = await response.json();
+    } catch (error) {
+      console.warn("Falling back to default stopwords", error);
+      stopwordList = DEFAULT_STOPWORDS.slice();
+    }
+    stopwordLoaded = true;
+    return stopwordList;
+  }
+
   async function processFiles(files) {
     if (!files.length) return;
-    stopwordList = stopwordList.length ? stopwordList : await stopwordsPromise;
+    await ensureStopwords();
     for (const file of files) {
       let text = "";
       if (file.type && file.type.startsWith('image/')) {
@@ -103,9 +141,7 @@
 
   async function ingestText(text) {
     if (!text) return;
-    if (!stopwordList.length) {
-      stopwordList = await stopwordsPromise;
-    }
+    await ensureStopwords();
     const units = parseUnits(text, stopwordList);
     mergeUnits(units);
   }
