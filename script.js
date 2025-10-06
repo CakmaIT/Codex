@@ -274,6 +274,7 @@ function setupWheel() {
     wheel.style.setProperty("--wheel-gradient", "#f3e7ff 0deg 360deg");
     wheel.innerHTML = "";
     wheel.style.transform = "rotate(0deg)";
+    updateWheelLabelPositions();
     return;
   }
 
@@ -302,6 +303,20 @@ function setupWheel() {
 
   currentWheelRotation = 0;
   wheel.style.transform = "rotate(0deg)";
+  updateWheelLabelPositions();
+}
+
+function updateWheelLabelPositions() {
+  if (!wheel) return;
+
+  const boundingBox = wheel.getBoundingClientRect();
+  const radius = Math.min(boundingBox.width, boundingBox.height) / 2;
+  const labelDistance = Math.max(radius - 42, 70);
+  wheel.style.setProperty("--label-distance", `${labelDistance}px`);
+
+  wheel.querySelectorAll(".wheel-label").forEach((label) => {
+    label.style.setProperty("--distance", `${labelDistance}px`);
+  });
 }
 
 function spinWheel() {
@@ -639,6 +654,12 @@ resetScoresBtn.addEventListener("click", resetScores);
 
 menuButtons.forEach((button) => {
   button.addEventListener("click", handleMenuClick);
+});
+
+let resizeTimeoutId;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeoutId);
+  resizeTimeoutId = setTimeout(updateWheelLabelPositions, 120);
 });
 
 setupWheel();
