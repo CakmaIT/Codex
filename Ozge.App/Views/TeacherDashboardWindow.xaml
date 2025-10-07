@@ -1,0 +1,65 @@
+<Window x:Class="Ozge.App.Views.TeacherDashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Özge2 Teacher Dashboard"
+        Width="1024"
+        Height="768"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="12" Spacing="8">
+            <TextBlock Text="Classes" FontWeight="Bold" />
+            <ListBox ItemsSource="{Binding Classes}" SelectedItem="{Binding ActiveClass}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Content="Cycle Projector Screen" Command="{Binding SetProjectorScreenCommand}" />
+            <TextBlock Text="Modes" FontWeight="Bold" Margin="0,16,0,0" />
+            <ListBox SelectedItem="{Binding SelectedMode}">
+                <ListBoxItem Content="HOME" />
+                <ListBoxItem Content="QUIZ" />
+                <ListBoxItem Content="PUZZLE" />
+                <ListBoxItem Content="SPEAK" />
+                <ListBoxItem Content="STORY" />
+                <ListBoxItem Content="DRAW" />
+                <ListBoxItem Content="BONUS" />
+                <ListBoxItem Content="RESULT" />
+            </ListBox>
+        </StackPanel>
+        <Grid Grid.Column="1" Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Overview" FontSize="18" FontWeight="Bold" />
+            <TabControl Grid.Row="1" Margin="0,12,0,0">
+                <TabItem Header="Groups">
+                    <ListView ItemsSource="{Binding Groups}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="120" />
+                                <GridViewColumn Header="Score" DisplayMemberBinding="{Binding Score}" Width="80" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+                <TabItem Header="Units">
+                    <ListView ItemsSource="{Binding Units}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200" />
+                                <GridViewColumn Header="Topic" DisplayMemberBinding="{Binding Topic}" Width="200" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</Window>
