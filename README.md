@@ -24,9 +24,11 @@ Use the provided PowerShell helper to restore packages, apply migrations and pub
 ./build_publish.ps1
 ```
 
+> ℹ️ **NuGet feed**: Some environments (e.g. fresh Visual Studio installs) default to the `Microsoft Visual Studio Offline Packages` source which does not contain the dependencies required by Özge2. The repository therefore includes a `NuGet.config` at the solution root that clears the offline feed and points to `https://api.nuget.org/v3/index.json`. Keep this file alongside the solution (or import it into your global NuGet settings) so `dotnet restore` can resolve all packages.
+
 The script performs the following steps:
 
-1. `dotnet restore` (solution root)
+1. `dotnet restore` (solution root – uses the included `NuGet.config` to target nuget.org)
 2. `dotnet build -c Release`
 3. `dotnet ef database update` (within `Ozge.Data`)
 4. `dotnet publish Ozge.App -c Release -r win-x64 -p:PublishSingleFile=true -p:SelfContained=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish`
