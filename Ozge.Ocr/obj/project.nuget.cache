@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "dgSpecHash": "oNXd1QfXTDA=",
+  "success": false,
+  "projectFilePath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Ocr\\Ozge.Ocr.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Yasar\\.nuget\\packages\\communitytoolkit.mvvm\\8.2.2\\communitytoolkit.mvvm.8.2.2.nupkg.sha512",
+    "C:\\Users\\Yasar\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Yasar\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1103",
+      "level": "Error",
+      "message": "Unable to find a stable package UglyToad.PdfPig with version (>= 0.0.8)\r\n  - Found 2 version(s) in nuget.org [ Nearest version: 0.1.9-alpha001-patch1 ]",
+      "projectPath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Ocr\\Ozge.Ocr.csproj",
+      "filePath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Ocr\\Ozge.Ocr.csproj",
+      "libraryId": "UglyToad.PdfPig",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1102",
+      "level": "Error",
+      "message": "Unable to find package Tesseract with version (>= 5.3.0.2)\r\n  - Found 30 version(s) in nuget.org [ Nearest version: 5.2.0 ]",
+      "projectPath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Ocr\\Ozge.Ocr.csproj",
+      "filePath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Ocr\\Ozge.Ocr.csproj",
+      "libraryId": "Tesseract",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}
