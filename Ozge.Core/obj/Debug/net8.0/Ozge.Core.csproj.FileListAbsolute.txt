@@ -1,0 +1,13 @@
+F:\Projeler\Github\Codex\Codex\Ozge.Core\bin\Debug\net8.0\Ozge.Core.deps.json
+F:\Projeler\Github\Codex\Codex\Ozge.Core\bin\Debug\net8.0\Ozge.Core.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Core\bin\Debug\net8.0\Ozge.Core.pdb
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.csproj.AssemblyReference.cache
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.GeneratedMSBuildEditorConfig.editorconfig
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.AssemblyInfoInputs.cache
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.AssemblyInfo.cs
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.csproj.CoreCompileInputs.cache
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.sourcelink.json
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\refint\Ozge.Core.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\Ozge.Core.pdb
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Debug\net8.0\ref\Ozge.Core.dll

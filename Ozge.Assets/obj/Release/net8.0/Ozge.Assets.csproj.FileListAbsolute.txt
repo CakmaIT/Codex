@@ -1,0 +1,12 @@
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\bin\Release\net8.0\Ozge.Assets.deps.json
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\bin\Release\net8.0\Ozge.Assets.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\bin\Release\net8.0\Ozge.Assets.pdb
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.GeneratedMSBuildEditorConfig.editorconfig
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.AssemblyInfoInputs.cache
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.AssemblyInfo.cs
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.csproj.CoreCompileInputs.cache
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.sourcelink.json
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\refint\Ozge.Assets.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.pdb
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\ref\Ozge.Assets.dll

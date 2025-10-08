@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "d+a4aVNB/L4=",
+  "success": true,
+  "projectFilePath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.Core\\Ozge.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Yasar\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.1\\microsoft.extensions.dependencyinjection.abstractions.8.0.1.nupkg.sha512",
+    "C:\\Users\\Yasar\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.1\\microsoft.extensions.logging.abstractions.8.0.1.nupkg.sha512",
+    "C:\\Users\\Yasar\\.nuget\\packages\\system.threading.channels\\8.0.0\\system.threading.channels.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

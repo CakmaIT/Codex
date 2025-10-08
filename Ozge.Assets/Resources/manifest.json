@@ -1,0 +1,8 @@
+{
+  \"assets\": [
+    {
+      \"path\": \"tessdata/eng.traineddata\",
+      \"description\": \"Placeholder English tessdata. Replace with full file for production use.\"
+    }
+  ]
+}

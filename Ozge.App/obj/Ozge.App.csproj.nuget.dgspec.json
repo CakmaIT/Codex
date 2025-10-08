@@ -8,7 +8,11 @@
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.App\\Ozge.App.csproj",
+<<<<<<< Updated upstream
         "projectName": "Ozge.App",
+=======
+        "projectName": "Ozge2",
+>>>>>>> Stashed changes
         "projectPath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.App\\Ozge.App.csproj",
         "packagesPath": "C:\\Users\\Yasar\\.nuget\\packages\\",
         "outputPath": "F:\\Projeler\\Github\\Codex\\Codex\\Ozge.App\\obj\\",
@@ -69,21 +73,37 @@
             },
             "LiveChartsCore.SkiaSharpView.WPF": {
               "target": "Package",
+<<<<<<< Updated upstream
               "version": "[2.0.0, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
               "version": "[8.0.0, )"
+=======
+              "version": "[2.0.0-rc6.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )"
+>>>>>>> Stashed changes
             },
             "Microsoft.Extensions.Hosting": {
               "target": "Package",
               "version": "[8.0.0, )"
             },
+<<<<<<< Updated upstream
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.20, )",
               "autoReferenced": true
+=======
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+>>>>>>> Stashed changes
             },
             "NAudio": {
               "target": "Package",
@@ -95,15 +115,26 @@
             },
             "Serilog.Extensions.Hosting": {
               "target": "Package",
+<<<<<<< Updated upstream
               "version": "[5.0.0, )"
+=======
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Settings.Configuration": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+>>>>>>> Stashed changes
             },
             "Serilog.Sinks.File": {
               "target": "Package",
               "version": "[5.0.0, )"
+<<<<<<< Updated upstream
             },
             "System.Speech": {
               "target": "Package",
               "version": "[8.0.0, )"
+=======
+>>>>>>> Stashed changes
             }
           },
           "imports": [
@@ -135,7 +166,11 @@
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             },
+<<<<<<< Updated upstream
             "Microsoft.WindowsDesktop.App.WPF": {
+=======
+            "Microsoft.WindowsDesktop.App": {
+>>>>>>> Stashed changes
               "privateAssets": "none"
             }
           },
@@ -259,9 +294,23 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+<<<<<<< Updated upstream
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.2.2, )"
+=======
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "System.Threading.Channels": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+>>>>>>> Stashed changes
             }
           },
           "imports": [
@@ -336,12 +385,17 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
+<<<<<<< Updated upstream
               "version": "[8.0.4, )"
+=======
+              "version": "[8.0.6, )"
+>>>>>>> Stashed changes
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
+<<<<<<< Updated upstream
               "version": "[8.0.4, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
@@ -351,6 +405,23 @@
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
+=======
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+>>>>>>> Stashed changes
             }
           },
           "imports": [
@@ -426,6 +497,7 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+<<<<<<< Updated upstream
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -437,6 +509,15 @@
             "UglyToad.PdfPig": {
               "target": "Package",
               "version": "[0.0.8, )"
+=======
+            "Tesseract": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            },
+            "UglyToad.PdfPig": {
+              "target": "Package",
+              "version": "[1.7.0-custom-5, )"
+>>>>>>> Stashed changes
             }
           },
           "imports": [
