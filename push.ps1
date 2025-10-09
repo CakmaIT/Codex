@@ -3,7 +3,7 @@
   [string]$Owner       = "CakmaIT",
   [string]$Repo        = "Codex",
   [string]$Branch      = "Ozgev4",
-  [string]$GitToken    = "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"
+  [string]$GitToken    = "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"
 )
 
 $ErrorActionPreference = "Continue"
