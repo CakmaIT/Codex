@@ -174,3 +174,4 @@ F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\win-x64\refin
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\win-x64\Ozge2.pdb
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\win-x64\Ozge.App.genruntimeconfig.cache
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\win-x64\ref\Ozge2.dll
+F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\win-x64\Ozge.App.sourcelink.json

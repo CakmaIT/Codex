@@ -19,3 +19,4 @@ F:\Projeler\Github\Codex\Codex\Ozge.Ocr\obj\Release\net8.0\Ozge.Ocr.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Ocr\obj\Release\net8.0\refint\Ozge.Ocr.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Ocr\obj\Release\net8.0\Ozge.Ocr.pdb
 F:\Projeler\Github\Codex\Codex\Ozge.Ocr\obj\Release\net8.0\ref\Ozge.Ocr.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Ocr\obj\Release\net8.0\Ozge.Ocr.sourcelink.json

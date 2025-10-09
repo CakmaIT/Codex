@@ -10,3 +10,4 @@ F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\refint\Ozge.Core.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.pdb
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\ref\Ozge.Core.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.sourcelink.json

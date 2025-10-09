@@ -15,3 +15,4 @@ F:\Projeler\Github\Codex\Codex\Ozge.Data\obj\Release\net8.0\refint\Ozge.Data.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Data\obj\Release\net8.0\Ozge.Data.pdb
 F:\Projeler\Github\Codex\Codex\Ozge.Data\obj\Release\net8.0\Ozge.Data.genruntimeconfig.cache
 F:\Projeler\Github\Codex\Codex\Ozge.Data\obj\Release\net8.0\ref\Ozge.Data.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Data\obj\Release\net8.0\Ozge.Data.sourcelink.json

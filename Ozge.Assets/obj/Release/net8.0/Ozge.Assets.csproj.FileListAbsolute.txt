@@ -9,3 +9,4 @@ F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\refint\Ozge.Assets.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.pdb
 F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\ref\Ozge.Assets.dll
+F:\Projeler\Github\Codex\Codex\Ozge.Assets\obj\Release\net8.0\Ozge.Assets.sourcelink.json

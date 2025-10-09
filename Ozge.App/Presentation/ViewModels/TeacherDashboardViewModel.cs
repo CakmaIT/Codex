@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -32,6 +33,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     public ObservableCollection<QuestionBankItemViewModel> QuestionBank { get; } = new();
     public ObservableCollection<ProjectorDisplayOptionViewModel> ProjectorDisplays { get; } = new();
     public ObservableCollection<DashboardMenuOptionViewModel> DashboardMenus { get; } = new();
+    public ObservableCollection<EditableQuizOptionViewModel> EditableQuestionOptions { get; } = new();
 
     [ObservableProperty]
     private ClassItemViewModel? selectedClass;
@@ -133,6 +135,21 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private bool isPeopleMenuActive;
 
     [ObservableProperty]
+    private bool isQuestionEditMode;
+
+    [ObservableProperty]
+    private Guid? editableQuestionId;
+
+    [ObservableProperty]
+    private string editableQuestionPrompt = string.Empty;
+
+    [ObservableProperty]
+    private EditableQuizOptionViewModel? selectedEditableOption;
+
+    [ObservableProperty]
+    private string questionEditStatusMessage = string.Empty;
+
+    [ObservableProperty]
     private string newClassName = string.Empty;
 
     [ObservableProperty]
@@ -197,6 +214,77 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         UpdateFromState(_stateStore.Current);
     }
 
+    private void InitializeQuestionEditor(QuizQuestionState question, bool activateMode)
+    {
+        EditableQuestionId = question.QuestionId;
+        EditableQuestionPrompt = question.Prompt;
+        SetEditableOptions(question.Options
+            .Select(option => new EditableQuizOptionViewModel(option.Text, option.IsCorrect)));
+        SelectedEditableOption = EditableQuestionOptions.FirstOrDefault();
+        QuestionEditStatusMessage = string.Empty;
+        if (activateMode)
+        {
+            IsQuestionEditMode = true;
+        }
+    }
+
+    private void SetEditableOptions(IEnumerable<EditableQuizOptionViewModel> options)
+    {
+        foreach (var option in EditableQuestionOptions)
+        {
+            option.PropertyChanged -= OnEditableOptionPropertyChanged;
+        }
+
+        EditableQuestionOptions.Clear();
+
+        foreach (var option in options)
+        {
+            option.PropertyChanged += OnEditableOptionPropertyChanged;
+            EditableQuestionOptions.Add(option);
+        }
+    }
+
+    private void ClearQuestionEditor()
+    {
+        foreach (var option in EditableQuestionOptions)
+        {
+            option.PropertyChanged -= OnEditableOptionPropertyChanged;
+        }
+
+        EditableQuestionOptions.Clear();
+        SelectedEditableOption = null;
+        EditableQuestionId = null;
+        EditableQuestionPrompt = string.Empty;
+    }
+
+    private void OnEditableOptionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (!string.Equals(e.PropertyName, nameof(EditableQuizOptionViewModel.IsCorrect), StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        if (sender is not EditableQuizOptionViewModel option || !option.IsCorrect)
+        {
+            return;
+        }
+
+        foreach (var other in EditableQuestionOptions)
+        {
+            if (ReferenceEquals(other, option))
+            {
+                continue;
+            }
+
+            if (other.IsCorrect)
+            {
+                other.PropertyChanged -= OnEditableOptionPropertyChanged;
+                other.IsCorrect = false;
+                other.PropertyChanged += OnEditableOptionPropertyChanged;
+            }
+        }
+    }
+
     private void LoadProjectorDisplays()
     {
         var displays = _displayService
@@ -240,6 +328,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             var previousTeamRemovalClassId = SelectedClassForTeamRemoval?.Id;
             var previousStudentRemovalId = SelectedStudentToRemove?.Id;
             var previousTeamRemovalId = SelectedTeamToRemove?.Id;
+            var previousEditableQuestionId = EditableQuestionId;
 
             Classes.ReplaceWith(state.Classes.Select(ClassItemViewModel.FromState));
             SelectedClass = Classes.FirstOrDefault(x => x.Id == state.ActiveClassId);
@@ -355,6 +444,21 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             CurrentQuestionNumber = state.Quiz.TotalQuestions == 0
                 ? 0
                 : Math.Min(state.Quiz.CurrentQuestionIndex + 1, state.Quiz.TotalQuestions);
+
+            if (IsQuestionEditMode && previousEditableQuestionId.HasValue)
+            {
+                var questionState = state.Quiz.Questions.FirstOrDefault(q => q.QuestionId == previousEditableQuestionId.Value);
+                if (questionState is null)
+                {
+                    ClearQuestionEditor();
+                    IsQuestionEditMode = false;
+                    QuestionEditStatusMessage = "Duzenlenen soru kaldirildi.";
+                }
+                else
+                {
+                    InitializeQuestionEditor(questionState, activateMode: false);
+                }
+            }
 
             UpdateQuizStateFlags(state);
         });
