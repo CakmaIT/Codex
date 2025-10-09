@@ -49,6 +49,7 @@
 - Promoted projector open/freeze controls into the header so they stay visible outside the central workspace and dropped the fullscreen toggle per spec.
 - Cleaned up the quiz action ribbon accordingly and ensured freeze state still drives the shared button text.
 - Darkened combo box/backdrop elements across quiz, bank, and import menus and forced white foreground text for better readability on the new palette.
+- Added global combo-box styling so all dropdowns render with dark panels and light text for consistent readability going forward.
 - Ran `dotnet build` to validate XAML changes (same NU1701 package warnings persist).
 
 ### Follow-Ups
