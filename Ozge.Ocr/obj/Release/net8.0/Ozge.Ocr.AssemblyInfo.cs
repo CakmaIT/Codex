@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ozge.Ocr")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cbbe7d84d4499331dda91fee3a0b4fbc8b6e5ed7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8aa7f520e5325f251730509f8f8c764373803109")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ozge.Ocr")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ozge.Ocr")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

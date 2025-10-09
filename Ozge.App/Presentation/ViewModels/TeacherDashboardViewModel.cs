@@ -162,6 +162,21 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     [ObservableProperty]
     private string peopleStatusMessage = string.Empty;
 
+    [ObservableProperty]
+    private ClassItemViewModel? selectedClassForDeletion;
+
+    [ObservableProperty]
+    private ClassItemViewModel? selectedClassForStudentRemoval;
+
+    [ObservableProperty]
+    private StudentState? selectedStudentToRemove;
+
+    [ObservableProperty]
+    private ClassItemViewModel? selectedClassForTeamRemoval;
+
+    [ObservableProperty]
+    private GroupState? selectedTeamToRemove;
+
     public TeacherDashboardViewModel(
         IAppStateStore stateStore,
         IProjectorWindowManager projectorWindowManager,
@@ -220,9 +235,26 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             var previousStudentClassId = SelectedClassForNewStudent?.Id;
             var previousTeamClassId = SelectedClassForNewTeam?.Id;
             var previousAutoTeamClassId = SelectedClassForAutoTeams?.Id;
+            var previousDeletionClassId = SelectedClassForDeletion?.Id;
+            var previousStudentRemovalClassId = SelectedClassForStudentRemoval?.Id;
+            var previousTeamRemovalClassId = SelectedClassForTeamRemoval?.Id;
+            var previousStudentRemovalId = SelectedStudentToRemove?.Id;
+            var previousTeamRemovalId = SelectedTeamToRemove?.Id;
 
             Classes.ReplaceWith(state.Classes.Select(ClassItemViewModel.FromState));
             SelectedClass = Classes.FirstOrDefault(x => x.Id == state.ActiveClassId);
+
+            SelectedClassForDeletion = previousDeletionClassId.HasValue
+                ? Classes.FirstOrDefault(x => x.Id == previousDeletionClassId.Value) ?? SelectedClass ?? Classes.FirstOrDefault()
+                : SelectedClass ?? Classes.FirstOrDefault();
+
+            SelectedClassForStudentRemoval = previousStudentRemovalClassId.HasValue
+                ? Classes.FirstOrDefault(x => x.Id == previousStudentRemovalClassId.Value) ?? SelectedClass ?? Classes.FirstOrDefault()
+                : SelectedClass ?? Classes.FirstOrDefault();
+
+            SelectedClassForTeamRemoval = previousTeamRemovalClassId.HasValue
+                ? Classes.FirstOrDefault(x => x.Id == previousTeamRemovalClassId.Value) ?? SelectedClass ?? Classes.FirstOrDefault()
+                : SelectedClass ?? Classes.FirstOrDefault();
 
             if (SelectedClass is not null)
             {
@@ -289,6 +321,16 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
                 SelectedClassForNewTeam = null;
                 SelectedClassForAutoTeams = null;
             }
+
+            SelectedStudentToRemove = previousStudentRemovalId.HasValue
+                ? SelectedClassForStudentRemoval?.Students.FirstOrDefault(s => s.Id == previousStudentRemovalId.Value)
+                  ?? SelectedClassForStudentRemoval?.Students.FirstOrDefault()
+                : SelectedClassForStudentRemoval?.Students.FirstOrDefault();
+
+            SelectedTeamToRemove = previousTeamRemovalId.HasValue
+                ? SelectedClassForTeamRemoval?.Groups.FirstOrDefault(g => g.Id == previousTeamRemovalId.Value)
+                  ?? SelectedClassForTeamRemoval?.Groups.FirstOrDefault()
+                : SelectedClassForTeamRemoval?.Groups.FirstOrDefault();
 
             var activeClass = state.Classes.FirstOrDefault(x => x.Id == state.ActiveClassId);
             if (activeClass is not null)
@@ -843,6 +885,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return builder;
         });
 
+        SelectedStudentToRemove = updatedClass.Students.FirstOrDefault(s => s.Id == student.Id);
         NewStudentName = string.Empty;
         NewStudentSeat = string.Empty;
         PeopleStatusMessage = $"Öğrenci eklendi: {student.Name}";
@@ -893,6 +936,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return builder;
         });
 
+        SelectedTeamToRemove = updatedClass.Groups.FirstOrDefault(g => g.Id == group.Id);
         NewTeamName = string.Empty;
         NewTeamAvatar = avatar;
         PeopleStatusMessage = $"Takim eklendi: {group.Name}";
@@ -944,7 +988,119 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return builder;
         });
 
+        SelectedTeamToRemove = updatedClass.Groups.FirstOrDefault();
         PeopleStatusMessage = $"Toplam {count} takim olusturuldu.";
+    }
+
+    [RelayCommand]
+    private void DeleteClass()
+    {
+        var targetClass = SelectedClassForDeletion ?? SelectedClass;
+        if (targetClass is null)
+        {
+            PeopleStatusMessage = "Silinecek sinif secilmedi.";
+            return;
+        }
+
+        var currentState = _stateStore.Current;
+        if (!currentState.Classes.Any(c => c.Id == targetClass.Id))
+        {
+            PeopleStatusMessage = "Secilen sinif bulunamadi.";
+            return;
+        }
+
+        _stateStore.Update(builder => builder.RemoveClass(targetClass.Id));
+        PeopleStatusMessage = $"Sinif silindi: {targetClass.Name}";
+    }
+
+    [RelayCommand]
+    private void DeleteStudent()
+    {
+        var targetClass = SelectedClassForStudentRemoval ?? SelectedClass;
+        var student = SelectedStudentToRemove;
+
+        if (targetClass is null)
+        {
+            PeopleStatusMessage = "Öğrenci silmek icin sinif secin.";
+            return;
+        }
+
+        if (student is null)
+        {
+            PeopleStatusMessage = "Silinecek öğrenciyi secin.";
+            return;
+        }
+
+        var currentState = _stateStore.Current;
+        var classState = currentState.Classes.FirstOrDefault(c => c.Id == targetClass.Id);
+        if (classState is null)
+        {
+            PeopleStatusMessage = "Secilen sinif bulunamadi.";
+            return;
+        }
+
+        if (!classState.Students.Any(s => s.Id == student.Id))
+        {
+            PeopleStatusMessage = "Secilen öğrenci bulunamadi.";
+            return;
+        }
+
+        var updatedClass = classState with { Students = classState.Students.Remove(student) };
+
+        _stateStore.Update(builder =>
+        {
+            builder.UpdateClass(updatedClass);
+            builder.ActiveClassId = updatedClass.Id;
+            return builder;
+        });
+
+        SelectedStudentToRemove = updatedClass.Students.FirstOrDefault();
+        PeopleStatusMessage = $"Öğrenci silindi: {student.Name}";
+    }
+
+    [RelayCommand]
+    private void DeleteTeam()
+    {
+        var targetClass = SelectedClassForTeamRemoval ?? SelectedClass;
+        var team = SelectedTeamToRemove;
+
+        if (targetClass is null)
+        {
+            PeopleStatusMessage = "Takim silmek icin sinif secin.";
+            return;
+        }
+
+        if (team is null)
+        {
+            PeopleStatusMessage = "Silinecek takimi secin.";
+            return;
+        }
+
+        var currentState = _stateStore.Current;
+        var classState = currentState.Classes.FirstOrDefault(c => c.Id == targetClass.Id);
+        if (classState is null)
+        {
+            PeopleStatusMessage = "Secilen sinif bulunamadi.";
+            return;
+        }
+
+        if (!classState.Groups.Any(g => g.Id == team.Id))
+        {
+            PeopleStatusMessage = "Secilen takim bulunamadi.";
+            return;
+        }
+
+        var updatedClass = classState with { Groups = classState.Groups.Remove(team) };
+
+        _stateStore.Update(builder =>
+        {
+            builder.UpdateClass(updatedClass);
+            builder.ActiveClassId = updatedClass.Id;
+            return builder;
+        });
+
+        SelectedTeamToRemove = updatedClass.Groups.FirstOrDefault();
+        PeopleStatusMessage = $"Takim silindi: {team.Name}";
     }
 
     partial void OnSelectedMenuChanged(DashboardMenuOptionViewModel? value)
@@ -959,9 +1115,17 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         if (IsPeopleMenuActive)
         {
             PeopleStatusMessage = string.Empty;
-            SelectedClassForNewStudent ??= SelectedClass;
-            SelectedClassForNewTeam ??= SelectedClass;
-            SelectedClassForAutoTeams ??= SelectedClass;
+            var defaultClass = SelectedClass ?? Classes.FirstOrDefault();
+
+            SelectedClassForNewStudent ??= defaultClass;
+            SelectedClassForNewTeam ??= defaultClass;
+            SelectedClassForAutoTeams ??= defaultClass;
+            SelectedClassForDeletion ??= defaultClass;
+            SelectedClassForStudentRemoval ??= defaultClass;
+            SelectedClassForTeamRemoval ??= defaultClass;
+
+            SelectedStudentToRemove ??= SelectedClassForStudentRemoval?.Students.FirstOrDefault();
+            SelectedTeamToRemove ??= SelectedClassForTeamRemoval?.Groups.FirstOrDefault();
         }
 
         if (IsQuestionBankMenuActive &&
@@ -1087,19 +1251,35 @@ public sealed class ClassItemViewModel
     public string Name { get; }
     public int TotalScore { get; }
     public IReadOnlyList<UnitSummary> Units { get; }
+    public IReadOnlyList<StudentState> Students { get; }
+    public IReadOnlyList<GroupState> Groups { get; }
 
-    private ClassItemViewModel(Guid id, string name, int totalScore, IReadOnlyList<UnitSummary> units)
+    private ClassItemViewModel(
+        Guid id,
+        string name,
+        int totalScore,
+        IReadOnlyList<UnitSummary> units,
+        IReadOnlyList<StudentState> students,
+        IReadOnlyList<GroupState> groups)
     {
         Id = id;
         Name = name;
         TotalScore = totalScore;
         Units = units;
+        Students = students;
+        Groups = groups;
     }
 
     public static ClassItemViewModel FromState(ClassState state)
     {
         var totalScore = state.Groups.Sum(group => group.Score);
-        return new ClassItemViewModel(state.Id, state.Name, totalScore, state.Units);
+        return new ClassItemViewModel(
+            state.Id,
+            state.Name,
+            totalScore,
+            state.Units,
+            state.Students,
+            state.Groups);
     }
 }
 
@@ -1167,6 +1347,9 @@ public sealed class DashboardMenuOptionViewModel
 
     public override string ToString() => Title;
 }
+
+
+
 
 
 

@@ -54,3 +54,15 @@
 
 ### Follow-Ups
 - Review other legacy sections that still use lighter brushes to keep the visual language consistent after these contrast updates.
+
+## 2025-10-09 - People Management Tools
+
+### Summary
+- Extended the teacher dashboard with a Kisi Ekleme menu covering class, student, and team creation plus new delete flows and auto team generation controls.
+- Wired new state commands in the dashboard view-model to add/remove classes, students, and teams while keeping selections in sync with immutable app state.
+- Normalized dropdown styling so closed and open states share the same dark background/white text for readability.
+- Verified UI changes via dotnet build (existing NU1701 warnings remain).
+
+### Follow-Ups
+- Consider persisting class/student/team mutations to the underlying database instead of only living in memory.
+

@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Linq;
 using Ozge.Core.Domain.Enums;
 
 namespace Ozge.Core.State;
@@ -9,6 +10,7 @@ namespace Ozge.Core.State;
 public sealed class AppStateBuilder
 {
     private ImmutableList<ClassState> _classes;
+    public IReadOnlyList<ClassState> Classes => _classes;
     public Guid ActiveClassId { get; set; }
     public LessonMode ActiveMode { get; set; }
     public Guid? ActiveUnitId { get; set; }
@@ -51,6 +53,18 @@ public sealed class AppStateBuilder
         }
 
         _classes = list.ToImmutable();
+        return this;
+    }
+
+    public AppStateBuilder RemoveClass(Guid classId)
+    {
+        _classes = _classes.Where(c => c.Id != classId).ToImmutableList();
+        if (ActiveClassId == classId)
+        {
+            ActiveClassId = _classes.FirstOrDefault()?.Id ?? Guid.Empty;
+            ActiveUnitId = null;
+        }
+
         return this;
     }
 

@@ -752,6 +752,79 @@
                                     </StackPanel>
                                 </Border>
 
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Sinif Sil"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForDeletion, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,12"
+                                                  Padding="6,3" />
+                                        <Button Content="Sinifi Sil"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding DeleteClassCommand}"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Öğrenci Sil"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForStudentRemoval, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,8"
+                                                  Padding="6,3" />
+                                        <ComboBox ItemsSource="{Binding SelectedClassForStudentRemoval.Students}"
+                                                  SelectedItem="{Binding SelectedStudentToRemove, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,0,0,12"
+                                                  Padding="6,3" />
+                                        <Button Content="Öğrenciyi Sil"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding DeleteStudentCommand}"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Takim Sil"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForTeamRemoval, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,8"
+                                                  Padding="6,3" />
+                                        <ComboBox ItemsSource="{Binding SelectedClassForTeamRemoval.Groups}"
+                                                  SelectedItem="{Binding SelectedTeamToRemove, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,0,0,12"
+                                                  Padding="6,3" />
+                                        <Button Content="Takimi Sil"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding DeleteTeamCommand}"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
                                 <TextBlock Text="{Binding PeopleStatusMessage}"
                                            Foreground="{StaticResource TeacherAccentBrush}"
                                            Opacity="0.9"
