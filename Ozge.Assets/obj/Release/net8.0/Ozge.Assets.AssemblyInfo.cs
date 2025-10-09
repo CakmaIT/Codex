@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ozge.Assets")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb61d63a03c0926f4b4a471bca8f693a6cab5903")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c23a333f671e2f4ea6075864c39ecb29514795f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ozge.Assets")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ozge.Assets")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
