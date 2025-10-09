@@ -12,3 +12,5 @@ cd F:\Projeler\Github\Codex\Codex
 dotnet restore
 dotnet build Ozge.sln -c Release
 dotnet build Ozge.App/Ozge.App.csproj -c Release -r win-x64 --no-self-contained --no-restore
+
+"F:\Projeler\Github\Codex\Codex\Ozge.App\bin\Release\net8.0-windows\Ozge2.exe"

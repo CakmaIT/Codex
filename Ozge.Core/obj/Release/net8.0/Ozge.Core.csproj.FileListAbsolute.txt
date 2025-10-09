@@ -6,7 +6,6 @@ F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.GeneratedM
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.AssemblyInfoInputs.cache
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.AssemblyInfo.cs
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.csproj.CoreCompileInputs.cache
-F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.sourcelink.json
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\refint\Ozge.Core.dll
 F:\Projeler\Github\Codex\Codex\Ozge.Core\obj\Release\net8.0\Ozge.Core.pdb

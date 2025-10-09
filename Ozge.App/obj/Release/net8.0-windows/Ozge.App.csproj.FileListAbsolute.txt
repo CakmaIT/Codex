@@ -193,7 +193,6 @@ F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.Gene
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.AssemblyInfoInputs.cache
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.AssemblyInfo.cs
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.csproj.CoreCompileInputs.cache
-F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.sourcelink.json
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge.App.csproj.Up2Date
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\Ozge2.dll
 F:\Projeler\Github\Codex\Codex\Ozge.App\obj\Release\net8.0-windows\refint\Ozge2.dll

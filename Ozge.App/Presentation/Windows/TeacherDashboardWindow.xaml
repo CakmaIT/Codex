@@ -46,78 +46,24 @@
             </Setter>
         </Style>
 
-        <SolidColorBrush x:Key="ComboBackgroundBrush" Color="#12172A" />
-        <SolidColorBrush x:Key="ComboBorderBrush" Color="#2C3A5A" />
-
         <Style TargetType="ComboBox">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="{StaticResource ComboBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{StaticResource ComboBorderBrush}" />
+            <Setter Property="Background" Value="#1B2238" />
+            <Setter Property="BorderBrush" Value="#2C3A5A" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Padding" Value="8,4" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Grid SnapsToDevicePixels="True">
-                            <Border x:Name="Border"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="6" />
-                            <ContentPresenter x:Name="ContentSite"
-                                              Margin="8,2,30,2"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Left"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" />
-                            <Path x:Name="Arrow"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Center"
-                                  Margin="0,0,12,0"
-                                  Fill="White"
-                                  Data="M 0 0 L 8 0 L 4 4 Z" />
-                            <Popup x:Name="Popup"
-                                   Placement="Bottom"
-                                   IsOpen="{TemplateBinding IsDropDownOpen}"
-                                   AllowsTransparency="True"
-                                   Focusable="False"
-                                   PopupAnimation="Fade">
-                                <Grid MinWidth="{TemplateBinding ActualWidth}"
-                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder"
-                                            Background="{StaticResource ComboBackgroundBrush}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="0,0,6,6">
-                                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                                      VerticalScrollBarVisibility="Auto"
-                                                      CanContentScroll="True"
-                                                      Background="{StaticResource ComboBackgroundBrush}">
-                                            <StackPanel IsItemsHost="True"
-                                                        Background="{StaticResource ComboBackgroundBrush}" />
-                                        </ScrollViewer>
-                                    </Border>
-                                </Grid>
-                            </Popup>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Border" Property="Background" Value="#20283E" />
-                                <Setter TargetName="Arrow" Property="Fill" Value="#66FFFFFF" />
-                                <Setter Property="Foreground" Value="#66FFFFFF" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsDropDownOpen" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
-                                <Setter TargetName="Border" Property="CornerRadius" Value="6,6,0,0" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#151D33" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#1B2238" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#1B2238" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="#1B2238" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="#1B2238" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="White" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#2E6CFF" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+            </Style.Resources>
         </Style>
 
         <Style TargetType="ComboBoxItem">
