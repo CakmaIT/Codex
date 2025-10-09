@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -133,6 +134,21 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
     [ObservableProperty]
     private bool isPeopleMenuActive;
+
+    [ObservableProperty]
+    private bool isQuestionEditMode;
+
+    [ObservableProperty]
+    private Guid? editableQuestionId;
+
+    [ObservableProperty]
+    private string editableQuestionPrompt = string.Empty;
+
+    [ObservableProperty]
+    private EditableQuizOptionViewModel? selectedEditableOption;
+
+    [ObservableProperty]
+    private string questionEditStatusMessage = string.Empty;
 
     [ObservableProperty]
     private bool isQuestionEditMode;
@@ -698,7 +714,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         {
             Filter = "PDF Dosyalari (*.pdf)|*.pdf",
             Title = "PDF'den Soru Aktar",
-            Multiselect = false
+            Multiselect = true
         };
 
         if (dialog.ShowDialog() != true)
@@ -709,33 +725,50 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         try
         {
             IsImportingQuestions = true;
-            var importResult = await _questionImportService.ImportPdfAsync(
-                SelectedClass.Id,
-                SelectedUnit.Id,
-                dialog.FileName,
-                CancellationToken.None);
-
             var messageBuilder = new StringBuilder();
-            if (importResult.QuestionsAdded == 0 && importResult.WordsAdded == 0)
+            var totalQuestionsAdded = 0;
+            var totalWordsAdded = 0;
+
+            foreach (var filePath in dialog.FileNames)
             {
-                messageBuilder.AppendLine("Yeni soru veya kelime bulunamadi.");
-            }
-            else
-            {
-                messageBuilder.AppendLine($"{importResult.QuestionsAdded} soru eklendi.");
-                if (importResult.WordsAdded > 0)
+                var importResult = await _questionImportService.ImportPdfAsync(
+                    SelectedClass.Id,
+                    SelectedUnit.Id,
+                    filePath,
+                    CancellationToken.None);
+
+                totalQuestionsAdded += importResult.QuestionsAdded;
+                totalWordsAdded += importResult.WordsAdded;
+
+                messageBuilder.AppendLine($"{Path.GetFileName(filePath)}:");
+                if (importResult.QuestionsAdded == 0 && importResult.WordsAdded == 0)
                 {
-                    messageBuilder.AppendLine($"{importResult.WordsAdded} kelime eklendi.");
+                    messageBuilder.AppendLine("  Yeni soru veya kelime bulunamadi.");
                 }
+                else
+                {
+                    messageBuilder.AppendLine($"  {importResult.QuestionsAdded} soru eklendi.");
+                    if (importResult.WordsAdded > 0)
+                    {
+                        messageBuilder.AppendLine($"  {importResult.WordsAdded} kelime eklendi.");
+                    }
+                }
+
+                foreach (var diagnostic in importResult.Diagnostics)
+                {
+                    messageBuilder.AppendLine($"  [{diagnostic.Severity}] {diagnostic.Message}");
+                }
+
+                messageBuilder.AppendLine();
             }
 
-            foreach (var diagnostic in importResult.Diagnostics)
+            if (dialog.FileNames.Length > 1)
             {
-                messageBuilder.AppendLine($"[{diagnostic.Severity}] {diagnostic.Message}");
+                messageBuilder.Insert(0, $"Toplam {totalQuestionsAdded} soru, {totalWordsAdded} kelime eklendi.{Environment.NewLine}{Environment.NewLine}");
             }
 
             System.Windows.MessageBox.Show(
-                messageBuilder.ToString(),
+                messageBuilder.ToString().Trim(),
                 "PDF iceri aktarma tamamlandi",
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Information);
@@ -893,6 +926,122 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
         _projectorWindowManager.RevealAnswers(false);
         UpdateQuizStateFlags(_stateStore.Current);
+
+        var addedQuestion = _stateStore.Current.Quiz.Questions.FirstOrDefault(q => q.QuestionId == newQuestion.QuestionId);
+        if (addedQuestion is not null)
+        {
+            InitializeQuestionEditor(addedQuestion, activateMode: true);
+            QuestionEditStatusMessage = "Yeni soruyu duzenleyebilirsiniz.";
+        }
+    }
+
+    [RelayCommand]
+    private void EditCurrentQuestion()
+    {
+        var question = _stateStore.Current.Quiz.CurrentQuestion;
+        if (question is null)
+        {
+            QuestionEditStatusMessage = "Duzenlenecek soru bulunamadi.";
+            return;
+        }
+
+        InitializeQuestionEditor(question, activateMode: true);
+    }
+
+    [RelayCommand]
+    private void CancelQuestionEdit()
+    {
+        ClearQuestionEditor();
+        IsQuestionEditMode = false;
+        QuestionEditStatusMessage = "Duzenleme iptal edildi.";
+    }
+
+    [RelayCommand]
+    private void AddEditableOption()
+    {
+        var option = new EditableQuizOptionViewModel($"Yeni Secenek {EditableQuestionOptions.Count + 1}", false);
+        option.PropertyChanged += OnEditableOptionPropertyChanged;
+        EditableQuestionOptions.Add(option);
+        SelectedEditableOption = option;
+    }
+
+    [RelayCommand]
+    private void RemoveEditableOption()
+    {
+        if (EditableQuestionOptions.Count <= 2)
+        {
+            QuestionEditStatusMessage = "En az iki secenek gerekli.";
+            return;
+        }
+
+        var target = SelectedEditableOption ?? EditableQuestionOptions.LastOrDefault();
+        if (target is null)
+        {
+            return;
+        }
+
+        target.PropertyChanged -= OnEditableOptionPropertyChanged;
+        EditableQuestionOptions.Remove(target);
+        SelectedEditableOption = EditableQuestionOptions.FirstOrDefault();
+    }
+
+    [RelayCommand]
+    private void SaveQuestionEdit()
+    {
+        if (!IsQuestionEditMode || EditableQuestionId is null)
+        {
+            QuestionEditStatusMessage = "Duzenlenecek soru secilmedi.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(EditableQuestionPrompt))
+        {
+            QuestionEditStatusMessage = "Soru metni bos olamaz.";
+            return;
+        }
+
+        var optionStates = EditableQuestionOptions
+            .Select(option => new QuizOptionState(option.Text?.Trim() ?? string.Empty, option.IsCorrect))
+            .Where(option => !string.IsNullOrWhiteSpace(option.Text))
+            .ToImmutableList();
+
+        if (optionStates.Count < 2)
+        {
+            QuestionEditStatusMessage = "En az iki secenek gerekir.";
+            return;
+        }
+
+        if (!optionStates.Any(option => option.IsCorrect))
+        {
+            QuestionEditStatusMessage = "Dogru secenek isaretleyin.";
+            return;
+        }
+
+        var currentQuiz = _stateStore.Current.Quiz;
+        var questionIndex = currentQuiz.Questions.FindIndex(q => q.QuestionId == EditableQuestionId.Value);
+        if (questionIndex < 0)
+        {
+            QuestionEditStatusMessage = "Soru bulunamadi.";
+            return;
+        }
+
+        var updatedQuestion = new QuizQuestionState(EditableQuestionId.Value, EditableQuestionPrompt.Trim(), optionStates);
+        var updatedQuestions = currentQuiz.Questions.SetItem(questionIndex, updatedQuestion);
+        var updatedQuiz = new QuizState(
+            currentQuiz.UnitId,
+            questionIndex,
+            updatedQuestions.Count,
+            updatedQuestion,
+            updatedQuestions);
+
+        _stateStore.Update(builder =>
+        {
+            builder.WithQuizState(updatedQuiz);
+            return builder;
+        });
+
+        InitializeQuestionEditor(updatedQuestion, activateMode: true);
+        QuestionEditStatusMessage = "Soru guncellendi.";
     }
 
     [RelayCommand]
@@ -1450,6 +1599,21 @@ public sealed class DashboardMenuOptionViewModel
         new(key, title, description);
 
     public override string ToString() => Title;
+}
+
+public sealed partial class EditableQuizOptionViewModel : ObservableObject
+{
+    public EditableQuizOptionViewModel(string text, bool isCorrect)
+    {
+        this.text = text;
+        this.isCorrect = isCorrect;
+    }
+
+    [ObservableProperty]
+    private string text;
+
+    [ObservableProperty]
+    private bool isCorrect;
 }
 
 
