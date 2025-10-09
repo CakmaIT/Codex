@@ -14,6 +14,7 @@ public sealed record AppState(
     Guid? ActiveGroupId,
     bool IsAnswerRevealEnabled,
     bool IsProjectorFrozen,
+    string? PreferredProjectorDisplayId,
     QuizState Quiz,
     DateTimeOffset LastUpdatedUtc)
 {
@@ -25,6 +26,7 @@ public sealed record AppState(
         null,
         false,
         false,
+        null,
         QuizState.Empty,
         DateTimeOffset.UtcNow);
 }

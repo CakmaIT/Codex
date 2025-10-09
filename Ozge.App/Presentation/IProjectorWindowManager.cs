@@ -8,4 +8,6 @@ public interface IProjectorWindowManager
     bool IsProjectorVisible { get; }
     bool IsFullScreen { get; }
     void SetFullScreen(bool isFullScreen);
+    void SetTargetDisplay(string? displayId);
+    string? CurrentDisplayId { get; }
 }

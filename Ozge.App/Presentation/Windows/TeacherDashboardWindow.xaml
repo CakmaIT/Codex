@@ -5,271 +5,805 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Ozge.App.Presentation.ViewModels"
         mc:Ignorable="d"
-        Title="Ozge2 - Teacher Dashboard"
+        Title="Ozge2 - Ogretmen Paneli"
         Height="780"
         Width="1360"
+        Style="{StaticResource TeacherWindowStyle}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <Style x:Key="DashboardMenuItemStyle"
+               TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="0,0,12,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Container"
+                                CornerRadius="18"
+                                Background="#1B2238"
+                                Padding="16"
+                                BorderBrush="Transparent"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Left"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Container" Property="Background" Value="#4433A2FF" />
+                                <Setter TargetName="Container" Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Container" Property="BorderBrush" Value="{StaticResource TeacherAccentMutedBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <Grid Margin="16">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
-            <ColumnDefinition Width="24" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard RepeatBehavior="Forever"
+                            AutoReverse="True">
+                    <DoubleAnimation Storyboard.TargetName="AccentBubbleOneTransform"
+                                     Storyboard.TargetProperty="X"
+                                     Duration="0:0:18"
+                                     From="0"
+                                     To="32" />
+                    <DoubleAnimation Storyboard.TargetName="AccentBubbleTwoTransform"
+                                     Storyboard.TargetProperty="Y"
+                                     Duration="0:0:22"
+                                     From="0"
+                                     To="-28" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
 
-        <StackPanel Orientation="Horizontal"
-                    Grid.ColumnSpan="3"
-                    Margin="0,0,0,16"
-                    VerticalAlignment="Top">
-            <TextBlock Text="Ozge2 Teacher Dashboard"
-                       FontSize="28"
-                       FontWeight="Bold"
-                       Margin="0,0,24,0" />
-            <Button Content="{Binding AnswerRevealButtonText}"
-                    Command="{Binding ToggleAnswerRevealCommand}" />
-            <Button Content="{Binding FreezeButtonText}"
-                    Command="{Binding ToggleFreezeCommand}"
-                    Margin="8,0,0,0" />
-            <Button Content="Open Projector"
-                    Command="{Binding OpenProjectorCommand}"
-                    Margin="8,0,0,0" />
-            <Button Content="{Binding ProjectorFullScreenButtonText}"
-                    Command="{Binding ToggleProjectorFullScreenCommand}"
-                    Margin="8,0,0,0" />
-        </StackPanel>
+    <Grid>
+        <Grid>
+            <Ellipse Width="360"
+                     Height="360"
+                     Fill="{StaticResource TeacherAccentBrush}"
+                     Opacity="0.18"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Margin="-160,-200,0,0">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform x:Name="AccentBubbleOneTransform" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse Width="280"
+                     Height="280"
+                     Fill="{StaticResource TeacherAccentMutedBrush}"
+                     Opacity="0.14"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Bottom"
+                     Margin="0,0,-140,-160">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform x:Name="AccentBubbleTwoTransform" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+        </Grid>
 
-        <Border Grid.Row="1"
-                Background="#33101820"
-                CornerRadius="8"
-                Padding="12">
-            <StackPanel>
-                <TextBlock Text="Classes"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,8" />
-                <ListBox ItemsSource="{Binding Classes}"
-                         SelectedItem="{Binding SelectedClass, Mode=TwoWay}"
-                         Height="280">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Padding="24,20"
+                    CornerRadius="24">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                        <GradientStop Color="#FF22396D" Offset="0" />
+                        <GradientStop Color="#FF1E2A58" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Ozge2 Ogretmen Paneli"
+                                   FontSize="32"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding QuizStatus}"
+                                   Margin="0,8,0,0"
+                                   FontSize="16"
+                                   Foreground="{StaticResource TeacherAccentMutedBrush}" />
+                        <TextBlock Text="{Binding AnswerRevealStatus, StringFormat=Yanit Durumu: {0}}"
+                                   Margin="0,4,0,0"
+                                   Opacity="0.85" />
+                        <TextBlock Text="{Binding ProjectorStatus}"
+                                   Margin="0,8,0,0"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.75" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical"
+                                HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                            <Button Content="Projeksiyonu Aç"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding OpenProjectorCommand}"
+                                    Margin="0,0,8,0" />
+                            <Button Content="{Binding FreezeButtonText}"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Command="{Binding ToggleFreezeCommand}" />
+                        </StackPanel>
+                        <TextBlock Text="Projeksiyon Ekrani"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.8"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,12,0,0" />
+                        <ComboBox ItemsSource="{Binding ProjectorDisplays}"
+                                  SelectedItem="{Binding SelectedProjectorDisplay, Mode=TwoWay}"
+                                  MinWidth="240"
+                                  Height="36"
+                                  Margin="0,6,0,0"
+                                  Padding="6,2"
+                                  Background="#1B2238"
+                                  BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                  Foreground="White">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:ProjectorDisplayOptionViewModel}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding DisplayLabel}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                        <TextBlock Text="{Binding ResolutionLabel}"
+                                                   Opacity="0.7"
+                                                   FontSize="11"
+                                                   Foreground="White" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Margin="0,20,0,0"
+                    Style="{StaticResource TeacherCardStyle}"
+                    Padding="12">
+                <ListBox ItemsSource="{Binding DashboardMenus}"
+                         SelectedItem="{Binding SelectedMenu, Mode=TwoWay}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         HorizontalAlignment="Left"
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         ItemContainerStyle="{StaticResource DashboardMenuItemStyle}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewModels:ClassItemViewModel}">
-                            <Border Padding="10"
-                                    Margin="4"
-                                    Background="#55101820"
-                                    CornerRadius="4">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="16"
-                                               FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding TotalScore, StringFormat=Total Score: {0}}"
-                                               Margin="0,4,0,0" />
-                                </StackPanel>
-                            </Border>
+                        <DataTemplate DataType="{x:Type viewModels:DashboardMenuOptionViewModel}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}"
+                                           FontWeight="SemiBold"
+                                           FontSize="16" />
+                                <TextBlock Text="{Binding Description}"
+                                           Opacity="0.7"
+                                           FontSize="12" />
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
-        </Border>
+            </Border>
 
-        <Border Grid.Column="2"
-                Grid.Row="1"
-                Background="#22101820"
-                CornerRadius="8"
-                Padding="16">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <Border Grid.Row="2"
+                    Margin="0,24,0,0"
+                    Style="{StaticResource TeacherCardStyle}"
+                    Padding="24">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid x:Name="QuizContent"
+                              Visibility="{Binding IsQuizMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                <TextBlock Text="Class Overview"
-                           FontSize="20"
-                           FontWeight="SemiBold" />
+                            <WrapPanel Grid.Row="0"
+                                       Margin="0,0,0,16">
+                                <StackPanel Width="220"
+                                            Margin="0,0,16,12">
+                                    <TextBlock Text="Sinif Secimi"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Opacity="0.85" />
+                                    <ComboBox ItemsSource="{Binding Classes}"
+                                              SelectedItem="{Binding SelectedClass, Mode=TwoWay}"
+                                              DisplayMemberPath="Name"
+                                              Padding="8,4"
+                                              Background="#1B2238"
+                                              Foreground="White" />
+                                </StackPanel>
+                                <StackPanel Width="220"
+                                            Margin="0,0,16,12">
+                                    <TextBlock Text="Uniteler"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Opacity="0.85" />
+                                    <ComboBox ItemsSource="{Binding SelectedClass.Units}"
+                                              SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
+                                              DisplayMemberPath="Name"
+                                              Padding="8,4"
+                                              Background="#1B2238"
+                                              Foreground="White" />
+                                </StackPanel>
+                                <StackPanel Margin="0,0,16,12">
+                                    <TextBlock Text="Secili Unite"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Opacity="0.85" />
+                                    <TextBlock Text="{Binding SelectedUnit.Topic, StringFormat=Konu: {0}}"
+                                               Margin="0,6,0,0"
+                                               Opacity="0.8" />
+                                    <TextBlock Text="{Binding SelectedUnit.QuestionCount, StringFormat=Toplam Soru: {0}}"
+                                               Opacity="0.8" />
+                                </StackPanel>
+                            </WrapPanel>
 
-                <UniformGrid Grid.Row="1"
-                             Margin="0,12,0,12"
-                             Rows="1"
-                             Columns="4">
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Selected Class" FontWeight="Bold" />
-                        <TextBlock Text="{Binding SelectedClass.Name}"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Selected Unit" FontWeight="Bold" />
-                        <TextBlock Text="{Binding SelectedUnit.Name}"
-                                   FontSize="16"
-                                   TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                    <StackPanel Margin="0,0,12,0">
-                        <TextBlock Text="Projector" FontWeight="Bold" />
-                        <TextBlock Text="{Binding ProjectorStatus}" FontSize="16" />
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Text="Answer Reveal" FontWeight="Bold" />
-                        <TextBlock Text="{Binding AnswerRevealStatus}" FontSize="16" />
-                    </StackPanel>
-                </UniformGrid>
-
-                <Border Grid.Row="2"
-                        Background="#33101820"
-                        CornerRadius="6"
-                        Padding="12"
-                        Margin="0,0,0,12">
-                    <StackPanel>
-                        <TextBlock Text="Quiz Control"
-                                   FontWeight="SemiBold"
-                                   FontSize="18" />
-
-                        <WrapPanel Margin="0,12,0,0"
-                                   ItemHeight="80"
-                                   ItemWidth="260">
-                            <StackPanel Width="240" Margin="0,0,16,0">
-                                <TextBlock Text="Units"
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,4" />
-                                <ComboBox ItemsSource="{Binding SelectedClass.Units}"
-                                          SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
-                                          DisplayMemberPath="Name"
-                                          MinWidth="200" />
-                            </StackPanel>
-
-                            <StackPanel Width="260" Margin="0,0,16,0">
-                                <TextBlock Text="Status"
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,4" />
-                                <TextBlock Text="{Binding QuizStatus}"
-                                           TextWrapping="Wrap" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal"
-                                        VerticalAlignment="Bottom">
-                                <Button Content="Start Quiz"
+                            <WrapPanel Grid.Row="1"
+                                       Margin="0,0,0,12">
+                                <Button Content="Quiz Baslat"
+                                        Style="{StaticResource AccentButtonStyle}"
                                         Command="{Binding StartQuizCommand}"
-                                        IsEnabled="{Binding CanStartQuiz}" />
-                                <Button Content="Next Question"
+                                        IsEnabled="{Binding CanStartQuiz}"
+                                        Margin="0,0,12,12" />
+                                <Button Content="{Binding PreviousQuestionButtonText}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Command="{Binding PreviousQuestionCommand}"
+                                        IsEnabled="{Binding CanGoBackQuestion}"
+                                        Margin="0,0,12,12" />
+                                <Button Content="{Binding NextQuestionButtonText}"
+                                        Style="{StaticResource SecondaryButtonStyle}"
                                         Command="{Binding NextQuestionCommand}"
-                                        Margin="8,0,0,0"
-                                        IsEnabled="{Binding CanAdvanceQuestion}" />
-                                <Button Content="End Quiz"
+                                        IsEnabled="{Binding CanAdvanceQuestion}"
+                                        Margin="0,0,12,12" />
+                                <Button Content="Soru Ekle"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        Command="{Binding AddQuestionCommand}"
+                                        Margin="0,0,12,12" />
+                                <Button Content="Quiz Bitir"
+                                        Style="{StaticResource SecondaryButtonStyle}"
                                         Command="{Binding EndQuizCommand}"
-                                        Margin="8,0,0,0"
-                                        IsEnabled="{Binding CanEndQuiz}" />
+                                        IsEnabled="{Binding CanEndQuiz}"
+                                        Margin="0,0,12,12" />
+                                <Button Content="{Binding AnswerRevealButtonText}"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        Command="{Binding ToggleAnswerRevealCommand}"
+                                        Margin="0,0,12,12" />
+                            </WrapPanel>
+
+                            <StackPanel Grid.Row="2"
+                                        Orientation="Horizontal"
+                                        Visibility="{Binding IsQuizLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ProgressBar Width="160"
+                                             Height="10"
+                                             IsIndeterminate="True"
+                                             Margin="0,0,8,0" />
+                                <TextBlock Text="Quiz yukleniyor..."
+                                           VerticalAlignment="Center" />
                             </StackPanel>
-                        </WrapPanel>
 
-                        <TextBlock Text="Loading quiz..."
-                                   Foreground="{StaticResource TeacherAccentBrush}"
-                                   Margin="0,8,0,0"
-                                   Visibility="{Binding IsQuizLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <Grid Grid.Row="3"
+                                  Margin="0,20,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                        <Border Background="#22101820"
-                                CornerRadius="6"
-                                Padding="12"
-                                Margin="0,12,0,0">
+                                <Border Background="#1B2238"
+                                        CornerRadius="18"
+                                        Padding="20"
+                                        Margin="0,0,20,0">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CurrentQuestionTitle}"
+                                                   FontSize="22"
+                                                   FontWeight="Bold" />
+                                        <TextBlock Text="{Binding SelectedClass.Name, StringFormat=Sinif: {0}}"
+                                                   Margin="0,6,0,0"
+                                                   Opacity="0.8" />
+                                        <Grid Margin="0,16,0,0">
+                                            <ProgressBar Minimum="0"
+                                                         Maximum="1"
+                                                         Height="12"
+                                                         Value="{Binding QuizProgressValue}">
+                                                <ProgressBar.Resources>
+                                                    <SolidColorBrush x:Key="ProgressBarForeground"
+                                                                     Color="#FF6BEFFF" />
+                                                    <SolidColorBrush x:Key="ProgressBarBackground"
+                                                                     Color="#33162D56" />
+                                                </ProgressBar.Resources>
+                                            </ProgressBar>
+                                            <TextBlock Text="{Binding QuizProgressText}"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,-2,4,0"
+                                                       FontWeight="Bold" />
+                                        </Grid>
+                                        <TextBlock Text="{Binding QuizStatus}"
+                                                   Margin="0,12,0,0"
+                                                   Opacity="0.8" />
+                                        <TextBlock Text="{Binding AnswerRevealStatus, StringFormat=Cevap Durumu: {0}}"
+                                                   Margin="0,4,0,12"
+                                                   Opacity="0.75" />
+
+                                        <TextBlock Text="Quiz baslatilmadi."
+                                                   FontStyle="Italic"
+                                                   Opacity="0.7">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <ContentControl Content="{Binding CurrentQuestion}">
+                                            <ContentControl.Style>
+                                                <Style TargetType="ContentControl">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ContentControl.Style>
+                                            <ContentControl.ContentTemplate>
+                                                <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Prompt}"
+                                                                   FontSize="18"
+                                                                   FontWeight="SemiBold"
+                                                                   TextWrapping="Wrap" />
+                                                        <ItemsControl ItemsSource="{Binding Options}"
+                                                                      Margin="0,18,0,0">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate DataType="{x:Type viewModels:QuizOptionItemViewModel}">
+                                                                    <Border CornerRadius="14"
+                                                                            Padding="12"
+                                                                            Margin="0,0,0,10">
+                                                                        <Border.Style>
+                                                                            <Style TargetType="Border">
+                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding Position}" Value="1">
+                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushB}" />
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding Position}" Value="2">
+                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushC}" />
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding Position}" Value="3">
+                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushD}" />
+                                                                                    </DataTrigger>
+                                                                                    <DataTrigger Binding="{Binding Position}" Value="4">
+                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Border.Style>
+                                                                        <DockPanel LastChildFill="True">
+                                                                            <TextBlock Text="{Binding Text}"
+                                                                                       FontWeight="SemiBold"
+                                                                                       TextWrapping="Wrap" />
+                                                                            <TextBlock Text="✔"
+                                                                                       FontWeight="Bold"
+                                                                                       Margin="8,0,0,0"
+                                                                                       Visibility="{Binding DataContext.IsAnswerRevealEnabled, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                                       DockPanel.Dock="Right" />
+                                                                        </DockPanel>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ContentControl.ContentTemplate>
+                                        </ContentControl>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Background="#331C3563"
+                                        CornerRadius="18"
+                                        Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="Quiz Yol Haritasi"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold"
+                                                   Margin="0,0,0,12" />
+                                        <ListBox ItemsSource="{Binding QuizQuestions}"
+                                                 SelectedItem="{Binding CurrentQuestion}"
+                                                 IsHitTestVisible="False"
+                                                 Background="Transparent"
+                                                 BorderThickness="0">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
+                                                    <Border CornerRadius="12"
+                                                            Padding="12"
+                                                            Margin="0,0,0,10">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#1B2238" />
+                                                                <Setter Property="Opacity" Value="0.8" />
+                                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                                <Setter Property="BorderThickness" Value="1" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                                        <Setter Property="Background" Value="#4433A2FF" />
+                                                                        <Setter Property="Opacity" Value="1" />
+                                                                        <Setter Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding DisplayPrompt}"
+                                                                       FontWeight="SemiBold"
+                                                                       TextWrapping="Wrap" />
+                                                            <TextBlock Text="{Binding Options.Count, StringFormat=Secenek sayisi: {0}}"
+                                                                       Opacity="0.7"
+                                                                       Margin="0,4,0,0" />
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                        <Grid x:Name="QuestionBankContent"
+                              Visibility="{Binding IsQuestionBankMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel>
-                                <TextBlock Text="{Binding CurrentQuestion.Prompt}"
-                                           FontSize="20"
-                                           FontWeight="SemiBold"
+                                <TextBlock Text="Soru Bankasi"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,16" />
+
+                                <WrapPanel Margin="0,0,0,12">
+                                    <StackPanel Width="220"
+                                                Margin="0,0,16,12">
+                                        <TextBlock Text="Sinif Secimi"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Opacity="0.85" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClass, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Padding="8,4"
+                                                  Background="#1B2238"
+                                                  Foreground="White" />
+                                    </StackPanel>
+                                    <StackPanel Width="220"
+                                                Margin="0,0,16,12">
+                                        <TextBlock Text="Unite"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Opacity="0.85" />
+                                        <ComboBox ItemsSource="{Binding SelectedClass.Units}"
+                                                  SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Padding="8,4"
+                                                  Background="#1B2238"
+                                                  Foreground="White" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,12">
+                                    <Button Content="Soru Bankasini Yukle"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding LoadQuestionBankCommand}"
+                                            Margin="0,0,12,0" />
+                                    <Button Content="PDF'den Soru Aktar"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            Command="{Binding ImportQuestionsCommand}" />
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,8"
+                                            Visibility="{Binding IsQuestionBankLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <ProgressBar Width="160"
+                                                 Height="10"
+                                                 IsIndeterminate="True"
+                                                 Margin="0,0,8,0" />
+                                    <TextBlock Text="Soru bankasi yukleniyor..."
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding QuestionBankStatus}"
+                                           Opacity="0.8"
+                                           Margin="0,0,0,12" />
+
+                                <Border Background="#22182C4A"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        MaxHeight="360">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding QuestionBank}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type viewModels:QuestionBankItemViewModel}">
+                                                    <StackPanel Margin="0,0,0,14">
+                                                        <TextBlock Text="{Binding Prompt}"
+                                                                   FontWeight="SemiBold"
+                                                                   TextWrapping="Wrap" />
+                                                        <ItemsControl ItemsSource="{Binding Options}"
+                                                                      Margin="12,6,0,0">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               FontStyle="Italic"
+                                                                               Opacity="0.7" />
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid x:Name="PeopleContent"
+                              Visibility="{Binding IsPeopleMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Kisi Ekleme"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,16" />
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Yeni Sinif"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <TextBox Text="{Binding NewClassName, UpdateSourceTrigger=PropertyChanged}"
+                                                 Margin="0,8,0,12"
+                                                 Background="#12172A"
+                                                 Foreground="White"
+                                                 BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                 Padding="6" />
+                                        <Button Content="Sinif Ekle"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding AddClassCommand}"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Öğrenci Ekle"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForNewStudent, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,8"
+                                                  Background="#12172A"
+                                                  Foreground="White"
+                                                  BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                  Padding="6,3" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="{Binding NewStudentName, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="220"
+                                                     Margin="0,0,12,0"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="6"
+                                                     ToolTip="Öğrenci adi" />
+                                            <TextBox Text="{Binding NewStudentSeat, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="120"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="6"
+                                                     ToolTip="Sira" />
+                                        </StackPanel>
+                                        <Button Content="Öğrenci Ekle"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding AddStudentCommand}"
+                                                Margin="0,12,0,0"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Takim Ekle"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForNewTeam, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,8"
+                                                  Background="#12172A"
+                                                  Foreground="White"
+                                                  BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                  Padding="6,3" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Text="{Binding NewTeamName, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="220"
+                                                     Margin="0,0,12,0"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="6"
+                                                     ToolTip="Takim adi" />
+                                            <TextBox Text="{Binding NewTeamAvatar, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="120"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="6"
+                                                     ToolTip="Simge" />
+                                        </StackPanel>
+                                        <Button Content="Takim Ekle"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding AddTeamCommand}"
+                                                Margin="0,12,0,0"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="Otomatik Takim Olustur"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Foreground="White" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClassForAutoTeams, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Margin="0,8,0,8"
+                                                  Background="#12172A"
+                                                  Foreground="White"
+                                                  BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                  Padding="6,3" />
+                                        <StackPanel Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+                                            <TextBox Text="{Binding AutoTeamCountText, UpdateSourceTrigger=PropertyChanged}"
+                                                     Width="120"
+                                                     Margin="0,0,12,0"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="6"
+                                                     ToolTip="Takim sayisi" />
+                                            <Button Content="Takimlari Olustur"
+                                                    Style="{StaticResource AccentButtonStyle}"
+                                                    Command="{Binding AutoCreateTeamsCommand}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Text="{Binding PeopleStatusMessage}"
+                                           Foreground="{StaticResource TeacherAccentBrush}"
+                                           Opacity="0.9"
+                                           FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid x:Name="ImportContent"
+                              Visibility="{Binding IsImportMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Icerik Aktarma"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,16" />
+
+                                <WrapPanel Margin="0,0,0,12">
+                                    <StackPanel Width="220"
+                                                Margin="0,0,16,12">
+                                        <TextBlock Text="Sinif Secimi"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Opacity="0.85" />
+                                        <ComboBox ItemsSource="{Binding Classes}"
+                                                  SelectedItem="{Binding SelectedClass, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Padding="8,4"
+                                                  Background="#1B2238"
+                                                  Foreground="White" />
+                                    </StackPanel>
+                                    <StackPanel Width="220"
+                                                Margin="0,0,16,12">
+                                        <TextBlock Text="Hedef Unite"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Opacity="0.85" />
+                                        <ComboBox ItemsSource="{Binding SelectedClass.Units}"
+                                                  SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
+                                                  DisplayMemberPath="Name"
+                                                  Padding="8,4"
+                                                  Background="#1B2238"
+                                                  Foreground="White" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <Border Background="#1B2238"
+                                        CornerRadius="16"
+                                        Padding="16"
+                                        Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <TextBlock Text="PDF, resim veya metin dosyalarindan otomatik soru uretmek icin bir dosya secin."
+                                                   TextWrapping="Wrap"
+                                                   Opacity="0.8" />
+                                        <Button Content="PDF'den Soru Aktar"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding ImportQuestionsCommand}"
+                                                Margin="0,16,0,0"
+                                                HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </Border>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,8"
+                                            Visibility="{Binding IsImportingQuestions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <ProgressBar Width="160"
+                                                 Height="10"
+                                                 IsIndeterminate="True"
+                                                 Margin="0,0,8,0" />
+                                    <TextBlock Text="Icerik aktariliyor..."
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <TextBlock Text="Aktarilan sorular soru bankasina eklenir ve quiz menusunden kullanilabilir."
                                            TextWrapping="Wrap"
-                                           MinHeight="32" />
-                                <ItemsControl ItemsSource="{Binding CurrentQuestion.Options}"
-                                              Margin="0,12,0,0">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type viewModels:QuizOptionItemViewModel}">
-                                            <Border Background="#44101820"
-                                                    CornerRadius="4"
-                                                    Padding="8"
-                                                    Margin="0,4">
-                                                <DockPanel LastChildFill="False">
-                                                    <TextBlock Text="{Binding Text}"
-                                                               FontSize="16"
-                                                               TextWrapping="Wrap"
-                                                               Width="400" />
-                                                    <TextBlock Text="Correct"
-                                                               FontWeight="Bold"
-                                                               Foreground="{StaticResource TeacherAccentBrush}"
-                                                               Margin="8,0,0,0"
-                                                               Visibility="{Binding IsCorrect, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                                </DockPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                           Opacity="0.75" />
                             </StackPanel>
-                        </Border>
-
-                        <Border Background="#22101820"
-                                CornerRadius="6"
-                                Padding="12"
-                                Margin="0,12,0,0">
-                            <StackPanel>
-                                <TextBlock Text="Quiz Outline"
-                                           FontWeight="SemiBold"
-                                           FontSize="16" />
-                                <ItemsControl ItemsSource="{Binding QuizQuestions}"
-                                              Margin="0,8,0,0">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
-                                            <StackPanel Margin="0,4,0,8">
-                                                <TextBlock Text="{Binding Prompt}"
-                                                           FontWeight="SemiBold"
-                                                           TextWrapping="Wrap" />
-                                                <ItemsControl ItemsSource="{Binding Options}"
-                                                              Margin="16,4,0,0">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate DataType="{x:Type viewModels:QuizOptionItemViewModel}">
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="- "
-                                                                           FontSize="14" />
-                                                                <TextBlock Text="{Binding Text}"
-                                                                           TextWrapping="Wrap"
-                                                                           Width="400" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Row="3"
-                        Background="#33101820"
-                        CornerRadius="6"
-                        Padding="12">
-                    <StackPanel>
-                        <TextBlock Text="Leaderboard"
-                                   FontWeight="SemiBold"
-                                   FontSize="18" />
-                        <ListView ItemsSource="{Binding Leaderboard}"
-                                  Margin="0,12,0,0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate DataType="{x:Type viewModels:GroupScoreItem}">
-                                    <DockPanel LastChildFill="True">
-                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding Score}" DockPanel.Dock="Right" />
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

@@ -15,6 +15,7 @@ public sealed class AppStateBuilder
     public Guid? ActiveGroupId { get; set; }
     public bool IsAnswerRevealEnabled { get; set; }
     public bool IsProjectorFrozen { get; set; }
+    public string? PreferredProjectorDisplayId { get; set; }
     public QuizState Quiz { get; set; }
 
     public AppStateBuilder(AppState state)
@@ -26,6 +27,7 @@ public sealed class AppStateBuilder
         ActiveGroupId = state.ActiveGroupId;
         IsAnswerRevealEnabled = state.IsAnswerRevealEnabled;
         IsProjectorFrozen = state.IsProjectorFrozen;
+        PreferredProjectorDisplayId = state.PreferredProjectorDisplayId;
         Quiz = state.Quiz;
     }
 
@@ -66,6 +68,7 @@ public sealed class AppStateBuilder
         ActiveGroupId,
         IsAnswerRevealEnabled,
         IsProjectorFrozen,
+        PreferredProjectorDisplayId,
         Quiz,
         DateTimeOffset.UtcNow);
 }

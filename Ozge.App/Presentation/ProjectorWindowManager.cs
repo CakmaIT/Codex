@@ -17,6 +17,7 @@ public sealed class ProjectorWindowManager : IProjectorWindowManager
 
     private bool _isVisible;
     private bool _isFullScreen;
+    private string? _targetDisplayId;
 
     public ProjectorWindowManager(
         ProjectorWindow projectorWindow,
@@ -24,6 +25,7 @@ public sealed class ProjectorWindowManager : IProjectorWindowManager
     {
         _projectorWindow = projectorWindow;
         _displayService = displayService;
+        _targetDisplayId = displayService.DefaultProjectorDisplayId;
         _projectorWindow.Closed += (_, _) =>
         {
             _isVisible = false;
@@ -35,6 +37,7 @@ public sealed class ProjectorWindowManager : IProjectorWindowManager
 
     public bool IsProjectorVisible => _isVisible;
     public bool IsFullScreen => _isFullScreen;
+    public string? CurrentDisplayId => _targetDisplayId;
 
     public void EnsureProjectorWindow()
     {
@@ -87,6 +90,17 @@ public sealed class ProjectorWindowManager : IProjectorWindowManager
         }
     }
 
+    public void SetTargetDisplay(string? displayId)
+    {
+        var normalized = string.IsNullOrWhiteSpace(displayId) ? null : displayId;
+        _targetDisplayId = normalized;
+
+        if (_isVisible)
+        {
+            ApplyWindowPlacement();
+        }
+    }
+
     private void ApplyWindowPlacement()
     {
         var screen = GetTargetScreen();
@@ -129,18 +143,30 @@ public sealed class ProjectorWindowManager : IProjectorWindowManager
 
     private Screen? GetTargetScreen()
     {
-        var displayId = _displayService.DefaultProjectorDisplayId;
-
-        if (displayId is not null)
+        if (!string.IsNullOrWhiteSpace(_targetDisplayId))
         {
             var matching = Screen.AllScreens.FirstOrDefault(s =>
-                string.Equals(s.DeviceName, displayId, StringComparison.OrdinalIgnoreCase));
+                string.Equals(s.DeviceName, _targetDisplayId, StringComparison.OrdinalIgnoreCase));
             if (matching is not null)
             {
                 return matching;
             }
         }
 
-        return Screen.AllScreens.FirstOrDefault();
+        var defaultId = _displayService.DefaultProjectorDisplayId;
+        if (!string.IsNullOrWhiteSpace(defaultId))
+        {
+            var defaultScreen = Screen.AllScreens.FirstOrDefault(s =>
+                string.Equals(s.DeviceName, defaultId, StringComparison.OrdinalIgnoreCase));
+            if (defaultScreen is not null)
+            {
+                _targetDisplayId = defaultId;
+                return defaultScreen;
+            }
+        }
+
+        var fallback = Screen.AllScreens.FirstOrDefault();
+        _targetDisplayId = fallback?.DeviceName;
+        return fallback;
     }
 }

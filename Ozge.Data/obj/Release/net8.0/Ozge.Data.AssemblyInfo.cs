@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ozge.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7169ad57c70c7c91bcb9617d8ed467845979c7d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82e1b0941e79afe8ee358a699b3a77634fad7358")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ozge.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ozge.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

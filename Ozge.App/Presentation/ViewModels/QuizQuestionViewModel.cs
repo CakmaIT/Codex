@@ -9,25 +9,34 @@ namespace Ozge.App.Presentation.ViewModels;
 
 public sealed class QuizQuestionViewModel
 {
-    public QuizQuestionViewModel(Guid questionId, string prompt, IEnumerable<QuizOptionItemViewModel> options)
+    public QuizQuestionViewModel(Guid questionId, int displayIndex, string prompt, IEnumerable<QuizOptionItemViewModel> options)
     {
         QuestionId = questionId;
+        DisplayIndex = displayIndex;
         Prompt = prompt;
         Options = new ObservableCollection<QuizOptionItemViewModel>(options);
     }
 
     public Guid QuestionId { get; }
 
+    public int DisplayIndex { get; }
+
     public string Prompt { get; }
+
+    public string DisplayPrompt => $"{DisplayIndex}. {Prompt}";
 
     public ObservableCollection<QuizOptionItemViewModel> Options { get; }
 
-    public static QuizQuestionViewModel FromState(QuizQuestionState state)
+    public static QuizQuestionViewModel FromState(QuizQuestionState state, int displayIndex)
     {
         return new QuizQuestionViewModel(
             state.QuestionId,
+            displayIndex,
             state.Prompt,
-            state.Options.Select(option => new QuizOptionItemViewModel(option.Text, option.IsCorrect)));
+            state.Options.Select((option, optionIndex) => new QuizOptionItemViewModel(
+                option.Text,
+                option.IsCorrect,
+                optionIndex)));
     }
 
     public QuizQuestionState ToState() => new(

@@ -30,3 +30,26 @@
 ### Follow-Ups
 - Consider persisting quiz progress/history once gameplay modes expand (currently resets when class/unit changes).
 - Visual styling can be refined (e.g., responsive layouts, accent colors) once projector UI is validated on dual-screen hardware.
+
+## 2025-10-09 - Teacher Dashboard Menu Overhaul
+
+### Summary
+- Replaced the teacher screen sidebars with a top-level dashboard menu that switches among quiz control, question bank, and import workflows inside a single central card.
+- Moved class/unit selectors into each menu view and surfaced quiz/projector actions (start, navigation, answer reveal, projector controls) within the quiz panel.
+- Removed leaderboard/takim skor UI and refactored the XAML to emphasize one large workspace that adapts to the active menu.
+- Added menu state tracking to `TeacherDashboardViewModel` so section visibility toggles cleanly without duplicating logic.
+- Confirmed build health with `dotnet build` (existing third-party compatibility warnings remain).
+
+### Follow-Ups
+- UX polish: consider responsive spacing and hover feedback for the new menu buttons, plus validation messaging when class/unit selection is missing.
+
+## 2025-10-09 - Projector Controls & Contrast Fixes
+
+### Summary
+- Promoted projector open/freeze controls into the header so they stay visible outside the central workspace and dropped the fullscreen toggle per spec.
+- Cleaned up the quiz action ribbon accordingly and ensured freeze state still drives the shared button text.
+- Darkened combo box/backdrop elements across quiz, bank, and import menus and forced white foreground text for better readability on the new palette.
+- Ran `dotnet build` to validate XAML changes (same NU1701 package warnings persist).
+
+### Follow-Ups
+- Review other legacy sections that still use lighter brushes to keep the visual language consistent after these contrast updates.

@@ -15,13 +15,13 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
     public ObservableCollection<ProjectorQuizOptionViewModel> QuizOptions { get; } = new();
 
     [ObservableProperty]
-    private string modeTitle = "HOME";
+    private string modeTitle = "EGLENCE";
 
     [ObservableProperty]
-    private string prompt = "Waiting for teacher";
+    private string prompt = "Ogretmen bekleniyor";
 
     [ObservableProperty]
-    private string feedback = string.Empty;
+    private string feedback = "Hazir misiniz?";
 
     [ObservableProperty]
     private string quizPrompt = string.Empty;
@@ -30,10 +30,19 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
     private string quizProgress = string.Empty;
 
     [ObservableProperty]
+    private string quizProgressDetail = "0 / 0";
+
+    [ObservableProperty]
+    private double quizProgressValue;
+
+    [ObservableProperty]
     private bool showAnswers;
 
     [ObservableProperty]
     private bool isQuizVisible;
+
+    [ObservableProperty]
+    private bool showCelebration;
 
     public ProjectorViewModel(IMessenger messenger)
         : base(messenger)
@@ -47,12 +56,14 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
 
     private void UpdateFromState(AppState state)
     {
-        ModeTitle = state.ActiveMode.ToString().ToUpperInvariant();
+        ModeTitle = GetModeTitle(state.ActiveMode);
 
         var activeClass = state.Classes.FirstOrDefault(x => x.Id == state.ActiveClassId);
         if (activeClass is not null)
         {
-            Leaderboard.ReplaceWith(activeClass.Groups.OrderByDescending(x => x.Score).Select(GroupScoreItem.FromState));
+            Leaderboard.ReplaceWith(activeClass.Groups
+                .OrderByDescending(x => x.Score)
+                .Select(GroupScoreItem.FromState));
         }
         else
         {
@@ -61,22 +72,22 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
 
         ShowAnswers = state.IsAnswerRevealEnabled;
         Feedback = state.IsAnswerRevealEnabled
-            ? "Answers visible"
+            ? "Dogru cevaplar acik! Aferin!"
             : state.ActiveMode == LessonMode.Quiz
-                ? "Think carefully before answering."
-                : "Keep guessing!";
+                ? "Cevabini secmeden once dusun."
+                : "Enerjini yuksek tut!";
 
         Prompt = state.ActiveMode switch
         {
-            LessonMode.Home => "Welcome! Waiting for teacher to begin.",
-            LessonMode.Quiz => "Get ready for the next question.",
-            LessonMode.Puzzle => "Arrange the letters to solve the puzzle.",
-            LessonMode.Speak => "Speak clearly into the microphone.",
-            LessonMode.Story => "Listen carefully to the story.",
-            LessonMode.Draw => "Prepare to draw and spell!",
-            LessonMode.Bonus => "Bonus blitz! Stay focused.",
-            LessonMode.Result => "Here are the results!",
-            _ => string.Empty
+            LessonMode.Home => "Hazir olun! Birazdan ogretmeniniz baslatacak.",
+            LessonMode.Quiz => "Odaklanin, yeni soru yolda.",
+            LessonMode.Puzzle => "Harf parcalarini birlestir ve kelimeyi bul!",
+            LessonMode.Speak => "Sesi ac ve yuksek sesle konus!",
+            LessonMode.Story => "Hikayeyi dikkatle dinleyin.",
+            LessonMode.Draw => "Cizim kalemlerinizi hazirlayin!",
+            LessonMode.Bonus => "Bonus turu! En hizli olan kazanir.",
+            LessonMode.Result => "Skorlar aciklaniyor! Alkislara hazir olun.",
+            _ => "Hazir miyiz?"
         };
 
         UpdateQuizPresentation(state);
@@ -84,25 +95,50 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
 
     private void UpdateQuizPresentation(AppState state)
     {
-        if (state.ActiveMode == LessonMode.Quiz && state.Quiz.CurrentQuestion is not null)
+        if (state.ActiveMode == LessonMode.Quiz &&
+            state.Quiz.TotalQuestions > 0 &&
+            state.Quiz.CurrentQuestion is not null)
         {
             var question = state.Quiz.CurrentQuestion;
             QuizPrompt = question.Prompt;
-            QuizProgress = $"Question {Math.Max(1, state.Quiz.CurrentQuestionIndex + 1)} / {Math.Max(1, state.Quiz.TotalQuestions)}";
+            var questionNumber = Math.Max(1, state.Quiz.CurrentQuestionIndex + 1);
+            var totalQuestions = Math.Max(1, state.Quiz.TotalQuestions);
+            QuizProgress = $"Soru {questionNumber}";
+            QuizProgressDetail = $"{questionNumber} / {totalQuestions}";
+            QuizProgressValue = Math.Clamp((double)questionNumber / totalQuestions, 0, 1);
 
-            QuizOptions.ReplaceWith(question.Options.Select(option =>
-                new ProjectorQuizOptionViewModel(
-                    option.Text,
-                    state.IsAnswerRevealEnabled && option.IsCorrect)));
+            QuizOptions.ReplaceWith(question.Options
+                .Select((option, index) =>
+                    new ProjectorQuizOptionViewModel(
+                        option.Text,
+                        state.IsAnswerRevealEnabled && option.IsCorrect,
+                        index)));
 
             IsQuizVisible = true;
+            ShowCelebration = false;
         }
         else
         {
             QuizPrompt = string.Empty;
             QuizProgress = string.Empty;
+            QuizProgressDetail = "0 / 0";
+            QuizProgressValue = 0;
             QuizOptions.Clear();
             IsQuizVisible = false;
+            ShowCelebration = state.ActiveMode == LessonMode.Result && state.Quiz.TotalQuestions > 0;
         }
     }
+
+    private static string GetModeTitle(LessonMode mode) => mode switch
+    {
+        LessonMode.Home => "BASLANGIC",
+        LessonMode.Quiz => "QUIZ ZAMANI",
+        LessonMode.Puzzle => "BULMACA",
+        LessonMode.Speak => "KONUSMA",
+        LessonMode.Story => "HIKAYE",
+        LessonMode.Draw => "CIZ & YAZ",
+        LessonMode.Bonus => "BONUS",
+        LessonMode.Result => "SONUCLAR",
+        _ => "EGLENCE"
+    };
 }

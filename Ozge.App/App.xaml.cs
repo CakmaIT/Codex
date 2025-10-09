@@ -1,75 +1,10 @@
-<<<<<<< Updated upstream
-using System.Configuration;
-using System.IO;
-using System.Windows;
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Ozge.App.Services;
-using Ozge.App.State;
-using Ozge.App.ViewModels;
-using Ozge.App.Views;
-using Ozge.Core.Services;
-using Ozge.Data.Extensions;
-using Ozge.Data.Seed;
-using Ozge.Ocr.Services;
-
-namespace Ozge.App;
-
-public partial class App : Application
-{
-    private IHost? _host;
-
-    protected override void OnStartup(StartupEventArgs e)
-    {
-        base.OnStartup(e);
-        var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ozge2");
-        Directory.CreateDirectory(appData);
-        Directory.CreateDirectory(Path.Combine(appData, "Logs"));
-        Directory.CreateDirectory(Path.Combine(appData, "Snapshots"));
-        Directory.CreateDirectory(Path.Combine(appData, "Backups"));
-
-        _host = Host.CreateDefaultBuilder()
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddDebug();
-            })
-            .ConfigureServices((context, services) =>
-            {
-                var databasePath = Path.Combine(appData, "ozge2.db");
-                services.AddSingleton<AppPaths>(_ => new AppPaths(appData));
-                services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
-                services.AddOzgeData(databasePath);
-                services.AddOzgeOcr();
-                services.AddSingleton<StateStore>();
-                services.AddSingleton<WindowCoordinator>();
-                services.AddSingleton<TeacherDashboardViewModel>();
-                services.AddSingleton<ProjectorViewModel>();
-                services.AddTransient<TeacherDashboardWindow>();
-                services.AddTransient<ProjectorWindow>();
-            })
-            .Build();
-
-        _host.Start();
-
-        using var scope = _host.Services.CreateScope();
-        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-        var dataStore = scope.ServiceProvider.GetRequiredService<IDataStore>();
-        dataStore.InitializeAsync().GetAwaiter().GetResult();
-        seeder.SeedAsync().GetAwaiter().GetResult();
-
-        var window = scope.ServiceProvider.GetRequiredService<TeacherDashboardWindow>();
-        window.Show();
-=======
+using System;
 using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Ozge.App.Infrastructure;
 using Ozge.App.Presentation;
 using Ozge.App.Presentation.ViewModels;
@@ -96,26 +31,21 @@ public partial class App : System.Windows.Application
 
         _host = Host.CreateDefaultBuilder(e.Args)
             .UseContentRoot(AppContext.BaseDirectory)
-            .ConfigureAppConfiguration((context, configurationBuilder) =>
+            .ConfigureAppConfiguration((_, builder) =>
             {
-                configurationBuilder.Sources.Clear();
-                configurationBuilder
+                builder.Sources.Clear();
+                builder
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables(prefix: "OZGE_");
             })
             .UseSerilog()
-            .ConfigureServices((_, services) =>
-            {
-                RegisterServices(services);
-            })
+            .ConfigureServices((_, services) => RegisterServices(services))
             .Build();
 
         await _host.StartAsync();
 
         var initializer = _host.Services.GetRequiredService<AppInitializationHostedService>();
-        Log.Logger.Information("Starting application initialisation...");
         await initializer.EnsureInitializedAsync();
-        Log.Logger.Information("Application initialisation completed.");
 
         var dependencyChecker = _host.Services.GetRequiredService<DependencyCheckService>();
         var dependencyResult = dependencyChecker.Validate();
@@ -125,7 +55,7 @@ public partial class App : System.Windows.Application
             Log.Logger.Error("Startup dependency validation failed: {Message}", message);
             MessageBox.Show(
                 message,
-                "Missing Components",
+                "Eksik Bileşenler",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             Shutdown();
@@ -135,16 +65,15 @@ public partial class App : System.Windows.Application
         try
         {
             var teacherWindow = _host.Services.GetRequiredService<TeacherDashboardWindow>();
+            MainWindow = teacherWindow;
             teacherWindow.Show();
-            Log.Logger.Information("Main window set: {Title}", System.Windows.Application.Current.MainWindow?.Title ?? "<null>");
-            Log.Logger.Information("Teacher dashboard window displayed.");
         }
         catch (Exception ex)
         {
-            Log.Logger.Fatal(ex, "Failed to create or show the TeacherDashboardWindow");
+            Log.Logger.Fatal(ex, "TeacherDashboardWindow oluşturulamadı");
             MessageBox.Show(
                 ex.ToString(),
-                "Application Error",
+                "Uygulama Hatası",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             Shutdown();
@@ -153,10 +82,10 @@ public partial class App : System.Windows.Application
 
         DispatcherUnhandledException += (_, args) =>
         {
-            Log.Logger.Error(args.Exception, "Unhandled dispatcher exception");
+            Log.Logger.Error(args.Exception, "Beklenmeyen hata");
             MessageBox.Show(
                 args.Exception.Message,
-                "Unexpected Error",
+                "Beklenmeyen Hata",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             args.Handled = true;
@@ -190,6 +119,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<IProjectorWindowManager, ProjectorWindowManager>();
         services.AddSingleton<IJobQueue, NullJobQueue>();
         services.AddSingleton<IQuizSessionService, QuizSessionService>();
+        services.AddSingleton<IQuestionImportService, QuestionImportService>();
         services.AddSingleton<DependencyCheckService>();
 
         services.AddSingleton<TeacherDashboardWindow>();
@@ -204,22 +134,12 @@ public partial class App : System.Windows.Application
 
         services.AddSingleton<AppInitializationHostedService>();
         services.AddHostedService<BackgroundJobHostService>();
->>>>>>> Stashed changes
     }
 
     protected override async void OnExit(ExitEventArgs e)
     {
         if (_host is not null)
         {
-<<<<<<< Updated upstream
-            await _host.StopAsync(TimeSpan.FromSeconds(3));
-            _host.Dispose();
-        }
-
-        base.OnExit(e);
-    }
-}
-=======
             await _host.StopAsync(TimeSpan.FromSeconds(5));
             _host.Dispose();
         }
@@ -230,4 +150,3 @@ public partial class App : System.Windows.Application
 }
 
 
->>>>>>> Stashed changes

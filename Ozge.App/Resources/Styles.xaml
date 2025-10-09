@@ -1,28 +1,106 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="TeacherBackgroundBrush" Color="{StaticResource TeacherBackgroundColor}" />
+    <SolidColorBrush x:Key="TeacherCardBrush" Color="{StaticResource TeacherCardColor}" />
+    <SolidColorBrush x:Key="TeacherSurfaceBrush" Color="{StaticResource TeacherSurfaceColor}" />
     <SolidColorBrush x:Key="TeacherAccentBrush" Color="{StaticResource TeacherAccentColor}" />
-    <SolidColorBrush x:Key="ProjectorBackgroundBrush" Color="{StaticResource ProjectorBackgroundColor}" />
+    <SolidColorBrush x:Key="TeacherAccentMutedBrush" Color="{StaticResource TeacherAccentColorMuted}" />
+    <SolidColorBrush x:Key="TeacherSuccessBrush" Color="{StaticResource TeacherSuccessColor}" />
+    <SolidColorBrush x:Key="TeacherWarningBrush" Color="{StaticResource TeacherWarningColor}" />
+
+    <LinearGradientBrush x:Key="ProjectorBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource ProjectorGradientStart}" Offset="0" />
+        <GradientStop Color="{StaticResource ProjectorGradientMiddle}" Offset="0.5" />
+        <GradientStop Color="{StaticResource ProjectorGradientEnd}" Offset="1" />
+    </LinearGradientBrush>
     <SolidColorBrush x:Key="ProjectorAccentBrush" Color="{StaticResource ProjectorAccentColor}" />
 
-    <Style TargetType="Window">
+    <SolidColorBrush x:Key="OptionBrushA" Color="{StaticResource QuizOptionColorA}" />
+    <SolidColorBrush x:Key="OptionBrushB" Color="{StaticResource QuizOptionColorB}" />
+    <SolidColorBrush x:Key="OptionBrushC" Color="{StaticResource QuizOptionColorC}" />
+    <SolidColorBrush x:Key="OptionBrushD" Color="{StaticResource QuizOptionColorD}" />
+    <SolidColorBrush x:Key="OptionBrushE" Color="{StaticResource QuizOptionColorE}" />
+
+    <Style x:Key="TeacherWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="{StaticResource TeacherBackgroundBrush}" />
         <Setter Property="Foreground" Value="White" />
     </Style>
 
-    <Style TargetType="Button">
+    <Style x:Key="TeacherCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource TeacherSurfaceBrush}" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#CC000000" BlurRadius="14" Opacity="0.35" ShadowDepth="2" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AccentButtonStyle" TargetType="Button">
         <Setter Property="Margin" Value="4" />
-        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="Padding" Value="12,8" />
         <Setter Property="Background" Value="{StaticResource TeacherAccentBrush}" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#FF021428" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="8" Color="#9900C2FF" ShadowDepth="0" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="12">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource TeacherAccentMutedBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource TeacherAccentBrush}" />
+                <Setter Property="Opacity" Value="0.9" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="#448A9AAF" />
+                <Setter Property="Foreground" Value="#FFE0E0E0" />
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="0" ShadowDepth="0" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SecondaryButtonStyle" BasedOn="{StaticResource AccentButtonStyle}" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource TeacherSurfaceBrush}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="6" Color="#66000000" ShadowDepth="2" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource TeacherCardBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="ListBox">
         <Setter Property="Margin" Value="4" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="#22101820" />
+        <Setter Property="Background" Value="#221F325F" />
+        <Setter Property="BorderBrush" Value="#225B6CB2" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 </ResourceDictionary>
