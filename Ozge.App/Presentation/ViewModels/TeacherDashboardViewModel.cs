@@ -151,19 +151,10 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private string questionEditStatusMessage = string.Empty;
 
     [ObservableProperty]
-    private bool isQuestionEditMode;
+    private string bulkQuestionInput = string.Empty;
 
     [ObservableProperty]
-    private Guid? editableQuestionId;
-
-    [ObservableProperty]
-    private string editableQuestionPrompt = string.Empty;
-
-    [ObservableProperty]
-    private EditableQuizOptionViewModel? selectedEditableOption;
-
-    [ObservableProperty]
-    private string questionEditStatusMessage = string.Empty;
+    private string bulkQuestionStatusMessage = string.Empty;
 
     [ObservableProperty]
     private string newClassName = string.Empty;
@@ -238,6 +229,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             .Select(option => new EditableQuizOptionViewModel(option.Text, option.IsCorrect)));
         SelectedEditableOption = EditableQuestionOptions.FirstOrDefault();
         QuestionEditStatusMessage = string.Empty;
+        BulkQuestionStatusMessage = string.Empty;
         if (activateMode)
         {
             IsQuestionEditMode = true;
@@ -966,7 +958,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     }
 
     [RelayCommand]
-    private void RemoveEditableOption()
+    private void RemoveEditableOption(EditableQuizOptionViewModel? option)
     {
         if (EditableQuestionOptions.Count <= 2)
         {
@@ -974,7 +966,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return;
         }
 
-        var target = SelectedEditableOption ?? EditableQuestionOptions.LastOrDefault();
+        var target = option ?? SelectedEditableOption ?? EditableQuestionOptions.LastOrDefault();
         if (target is null)
         {
             return;
@@ -1042,6 +1034,220 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
         InitializeQuestionEditor(updatedQuestion, activateMode: true);
         QuestionEditStatusMessage = "Soru guncellendi.";
+    }
+
+    [RelayCommand]
+    private void AddBulkQuestions()
+    {
+        BulkQuestionStatusMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(BulkQuestionInput))
+        {
+            BulkQuestionStatusMessage = "Toplu ekleme icin once metin girin.";
+            return;
+        }
+
+        var currentState = _stateStore.Current;
+        var activeUnitId = currentState.Quiz.UnitId ?? SelectedUnit?.Id;
+        if (activeUnitId is null)
+        {
+            System.Windows.MessageBox.Show(
+                "Once bir sinif ve unite secmelisiniz.",
+                "Toplu soru eklenemedi",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Information);
+            return;
+        }
+
+        var normalizedInput = BulkQuestionInput.Replace("\r\n", "\n");
+        var blocks = normalizedInput.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+        if (blocks.Length == 0)
+        {
+            BulkQuestionStatusMessage = "Gecerli soru blogu bulunamadi.";
+            return;
+        }
+
+        var parsedQuestions = new List<QuizQuestionState>();
+        var notes = new List<string>();
+        var blockIndex = 1;
+
+        foreach (var block in blocks)
+        {
+            var lines = block
+                .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .ToList();
+
+            if (lines.Count < 3)
+            {
+                notes.Add($"Blok {blockIndex}: en az bir soru ve iki secenek gereklidir.");
+                blockIndex++;
+                continue;
+            }
+
+            var prompt = lines[0];
+            var options = new List<QuizOptionState>();
+            var correctCaptured = false;
+
+            foreach (var candidate in lines.Skip(1))
+            {
+                var text = candidate;
+                var isCorrect = false;
+
+                if (text.StartsWith("*", StringComparison.Ordinal))
+                {
+                    isCorrect = true;
+                    text = text[1..];
+                }
+
+                text = NormalizeBulkOptionText(text);
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    continue;
+                }
+
+                if (isCorrect)
+                {
+                    if (correctCaptured)
+                    {
+                        notes.Add($"Blok {blockIndex}: birden fazla dogru secenek isaretlendi, yalnizca ilki kullanildi.");
+                        isCorrect = false;
+                    }
+                    else
+                    {
+                        correctCaptured = true;
+                    }
+                }
+
+                options.Add(new QuizOptionState(text, isCorrect));
+            }
+
+            if (options.Count < 2)
+            {
+                notes.Add($"Blok {blockIndex}: en az iki gecerli secenek girin.");
+                blockIndex++;
+                continue;
+            }
+
+            var distinctOptions = new List<QuizOptionState>();
+            foreach (var option in options)
+            {
+                if (distinctOptions.Any(existing => string.Equals(existing.Text, option.Text, StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+
+                distinctOptions.Add(option);
+            }
+
+            if (distinctOptions.Count < 2)
+            {
+                notes.Add($"Blok {blockIndex}: benzersiz iki secenek gerekli.");
+                blockIndex++;
+                continue;
+            }
+
+            if (!distinctOptions.Any(option => option.IsCorrect))
+            {
+                distinctOptions[0] = distinctOptions[0] with { IsCorrect = true };
+                notes.Add($"Blok {blockIndex}: dogru secenek isaretlenmedi, ilk secenek dogru kabul edildi.");
+            }
+            else
+            {
+                var seenCorrect = false;
+                for (var i = 0; i < distinctOptions.Count; i++)
+                {
+                    if (!distinctOptions[i].IsCorrect)
+                    {
+                        continue;
+                    }
+
+                    if (!seenCorrect)
+                    {
+                        seenCorrect = true;
+                        continue;
+                    }
+
+                    distinctOptions[i] = distinctOptions[i] with { IsCorrect = false };
+                }
+            }
+
+            parsedQuestions.Add(new QuizQuestionState(Guid.NewGuid(), prompt, distinctOptions.ToImmutableList()));
+            blockIndex++;
+        }
+
+        if (parsedQuestions.Count == 0)
+        {
+            BulkQuestionStatusMessage = notes.Count == 0
+                ? "Toplu ekleme icin gecerli soru bulunamadi."
+                : string.Join(Environment.NewLine, notes);
+            return;
+        }
+
+        var quiz = currentState.Quiz;
+        var updatedQuestions = quiz.Questions.AddRange(parsedQuestions);
+        var newIndex = updatedQuestions.Count == 0
+            ? 0
+            : quiz.TotalQuestions == 0
+                ? 0
+                : Math.Min(quiz.CurrentQuestionIndex, updatedQuestions.Count - 1);
+
+        var currentQuestion = updatedQuestions.Count == 0 ? null : updatedQuestions[newIndex];
+        var updatedQuiz = new QuizState(
+            activeUnitId,
+            newIndex,
+            updatedQuestions.Count,
+            currentQuestion,
+            updatedQuestions);
+
+        _stateStore.Update(builder =>
+        {
+            builder.ActiveMode = LessonMode.Quiz;
+            builder.ActiveUnitId = activeUnitId;
+            builder.IsAnswerRevealEnabled = false;
+            builder.IsProjectorFrozen = false;
+            builder.WithQuizState(updatedQuiz);
+            return builder;
+        });
+
+        _projectorWindowManager.RevealAnswers(false);
+        UpdateQuizStateFlags(_stateStore.Current);
+
+        BulkQuestionInput = string.Empty;
+
+        var statusBuilder = new StringBuilder();
+        statusBuilder.AppendLine($"{parsedQuestions.Count} soru eklendi.");
+        foreach (var note in notes)
+        {
+            statusBuilder.AppendLine(note);
+        }
+
+        BulkQuestionStatusMessage = statusBuilder.ToString().Trim();
+    }
+
+    private static string NormalizeBulkOptionText(string text)
+    {
+        var trimmed = text.Trim();
+        if (trimmed.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        if (trimmed[0] == '-')
+        {
+            trimmed = trimmed[1..].TrimStart();
+        }
+
+        if (trimmed.Length >= 2 && (trimmed[1] == ')' || trimmed[1] == '.'))
+        {
+            if (char.IsLetterOrDigit(trimmed[0]))
+            {
+                trimmed = trimmed.Length > 2 ? trimmed[2..].TrimStart() : string.Empty;
+            }
+        }
+
+        return trimmed.Trim();
     }
 
     [RelayCommand]
