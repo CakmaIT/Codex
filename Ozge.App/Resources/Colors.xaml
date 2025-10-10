@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="TeacherBackgroundColor">#FF0E1630</Color>
+    <Color x:Key="TeacherCardColor">#FF162447</Color>
+    <Color x:Key="TeacherSurfaceColor">#FF1F2B56</Color>
+    <Color x:Key="TeacherAccentColor">#FF00C2FF</Color>
+    <Color x:Key="TeacherAccentColorMuted">#FF6BEFFF</Color>
+    <Color x:Key="TeacherSuccessColor">#FF6EE7B7</Color>
+    <Color x:Key="TeacherWarningColor">#FFFFD166</Color>
+
+    <Color x:Key="ProjectorGradientStart">#FF4B5CF2</Color>
+    <Color x:Key="ProjectorGradientMiddle">#FF8F53FF</Color>
+    <Color x:Key="ProjectorGradientEnd">#FFFF6584</Color>
+    <Color x:Key="ProjectorAccentColor">#FFFFFF9C</Color>
+
+    <Color x:Key="QuizOptionColorA">#FF7BDFF2</Color>
+    <Color x:Key="QuizOptionColorB">#FFF6AE2D</Color>
+    <Color x:Key="QuizOptionColorC">#FFBEE3F8</Color>
+    <Color x:Key="QuizOptionColorD">#FFEF476F</Color>
+    <Color x:Key="QuizOptionColorE">#FFA379F4</Color>
+</ResourceDictionary>
