@@ -1,8 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Ozge.App.Infrastructure;
 using Ozge.App.Presentation.Messaging;
 using Ozge.Core.Domain.Enums;
 using Ozge.Core.State;
@@ -11,6 +15,10 @@ namespace Ozge.App.Presentation.ViewModels;
 
 public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppStateChangedMessage>
 {
+    private readonly ISoundEffectPlayer _soundEffectPlayer;
+    private AppState _latestState = AppState.Empty;
+    private CancellationTokenSource? _feedbackCancellation;
+
     public ObservableCollection<GroupScoreItem> Leaderboard { get; } = new();
     public ObservableCollection<ProjectorQuizOptionViewModel> QuizOptions { get; } = new();
 
@@ -44,9 +52,18 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
     [ObservableProperty]
     private bool showCelebration;
 
-    public ProjectorViewModel(IMessenger messenger)
+    [ObservableProperty]
+    private bool showCorrectSelectionFeedback;
+
+    [ObservableProperty]
+    private bool showIncorrectSelectionFeedback;
+
+    public ProjectorViewModel(
+        IMessenger messenger,
+        ISoundEffectPlayer soundEffectPlayer)
         : base(messenger)
     {
+        _soundEffectPlayer = soundEffectPlayer;
     }
 
     public void Receive(AppStateChangedMessage message)
@@ -56,6 +73,7 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
 
     private void UpdateFromState(AppState state)
     {
+        _latestState = state;
         ModeTitle = GetModeTitle(state.ActiveMode);
 
         var activeClass = state.Classes.FirstOrDefault(x => x.Id == state.ActiveClassId);
@@ -95,6 +113,8 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
 
     private void UpdateQuizPresentation(AppState state)
     {
+        CancelFeedback();
+
         if (state.ActiveMode == LessonMode.Quiz &&
             state.Quiz.TotalQuestions > 0 &&
             state.Quiz.CurrentQuestion is not null)
@@ -107,12 +127,15 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
             QuizProgressDetail = $"{questionNumber} / {totalQuestions}";
             QuizProgressValue = Math.Clamp((double)questionNumber / totalQuestions, 0, 1);
 
-            QuizOptions.ReplaceWith(question.Options
-                .Select((option, index) =>
-                    new ProjectorQuizOptionViewModel(
-                        option.Text,
-                        state.IsAnswerRevealEnabled && option.IsCorrect,
-                        index)));
+            var options = question.Options
+                .Select((option, index) => new ProjectorQuizOptionViewModel(
+                    option.Text,
+                    option.IsCorrect,
+                    index))
+                .ToList();
+
+            QuizOptions.ReplaceWith(options);
+            ResetOptionStates();
 
             IsQuizVisible = true;
             ShowCelebration = false;
@@ -141,4 +164,107 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
         LessonMode.Result => "SONUCLAR",
         _ => "EGLENCE"
     };
+
+    [RelayCommand]
+    private async Task SelectOptionAsync(ProjectorQuizOptionViewModel? option)
+    {
+        if (option is null ||
+            _latestState.ActiveMode != LessonMode.Quiz ||
+            _latestState.Quiz.CurrentQuestion is null)
+        {
+            return;
+        }
+
+        var isCorrect = option.IsCorrect;
+
+        foreach (var quizOption in QuizOptions)
+        {
+            var isSelected = ReferenceEquals(quizOption, option);
+            quizOption.IsSelected = isSelected;
+            quizOption.IsIncorrectSelection = isSelected && !isCorrect;
+            quizOption.IsHighlighted = (ShowAnswers && quizOption.IsCorrect) || (quizOption.IsCorrect && isSelected);
+        }
+
+        Feedback = isCorrect
+            ? "Harika secim! Boyle devam."
+            : "Tekrar denemekten cekinme, dogrusunu bulacaksin.";
+
+        ShowCorrectSelectionFeedback = isCorrect;
+        ShowIncorrectSelectionFeedback = !isCorrect;
+
+        CancelFeedback();
+        _feedbackCancellation = new CancellationTokenSource();
+        var token = _feedbackCancellation.Token;
+
+        if (isCorrect)
+        {
+            await _soundEffectPlayer.PlayCorrectAsync();
+        }
+        else
+        {
+            await _soundEffectPlayer.PlayIncorrectAsync();
+        }
+
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2.5), token);
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
+
+        ShowCorrectSelectionFeedback = false;
+        ShowIncorrectSelectionFeedback = false;
+
+        foreach (var quizOption in QuizOptions)
+        {
+            if (!quizOption.IsCorrect)
+            {
+                quizOption.IsSelected = false;
+                quizOption.IsIncorrectSelection = false;
+            }
+
+            quizOption.IsHighlighted = ShowAnswers && quizOption.IsCorrect;
+        }
+    }
+
+    public void ResetAfterHide()
+    {
+        CancelFeedback();
+        ShowCorrectSelectionFeedback = false;
+        ShowIncorrectSelectionFeedback = false;
+        ResetOptionStates();
+    }
+
+    partial void OnShowAnswersChanged(bool value)
+    {
+        foreach (var option in QuizOptions)
+        {
+            option.IsHighlighted = (value && option.IsCorrect) || (option.IsCorrect && option.IsSelected);
+        }
+    }
+
+    private void ResetOptionStates()
+    {
+        foreach (var option in QuizOptions)
+        {
+            option.IsSelected = false;
+            option.IsIncorrectSelection = false;
+            option.IsHighlighted = ShowAnswers && option.IsCorrect;
+        }
+    }
+
+    private void CancelFeedback()
+    {
+        if (_feedbackCancellation is null)
+        {
+            return;
+        }
+
+        _feedbackCancellation.Cancel();
+        _feedbackCancellation.Dispose();
+        _feedbackCancellation = null;
+    }
 }
+

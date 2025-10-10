@@ -155,72 +155,81 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type viewModels:ProjectorQuizOptionViewModel}">
-                                    <Border CornerRadius="20"
-                                            Padding="20"
-                                            Margin="0,10"
-                                            Background="{StaticResource OptionBrushA}">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
-                                                <Setter Property="Opacity" Value="0.95" />
-                                                <Setter Property="BorderBrush" Value="#22FFFFFF" />
-                                                <Setter Property="BorderThickness" Value="1" />
-                                                <Setter Property="Effect">
-                                                    <Setter.Value>
-                                                        <DropShadowEffect BlurRadius="16"
-                                                                          ShadowDepth="0"
-                                                                          Opacity="0.35" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Position}" Value="1">
-                                                        <Setter Property="Background" Value="{StaticResource OptionBrushB}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Position}" Value="2">
-                                                        <Setter Property="Background" Value="{StaticResource OptionBrushC}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Position}" Value="3">
-                                                        <Setter Property="Background" Value="{StaticResource OptionBrushD}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Position}" Value="4">
-                                                        <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
-                                                        <Setter Property="BorderThickness" Value="4" />
-                                                        <Setter Property="BorderBrush" Value="White" />
-                                                        <Setter Property="Effect">
-                                                            <Setter.Value>
-                                                                <DropShadowEffect BlurRadius="30"
-                                                                                  ShadowDepth="0"
-                                                                                  Color="#FFFFFFFF"
-                                                                                  Opacity="0.85" />
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <DockPanel>
-                                            <Border Width="48"
-                                                    Height="48"
-                                                    CornerRadius="24"
-                                                    Margin="0,0,16,0"
-                                                    Background="#33FFFFFF"
-                                                    BorderBrush="#55FFFFFF"
-                                                    BorderThickness="2">
-                                                <TextBlock Text="{Binding Label}"
-                                                           FontSize="28"
-                                                           FontWeight="Bold"
-                                                           HorizontalAlignment="Center"
+                                    <Button Command="{Binding DataContext.SelectOptionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="0"
+                                            Cursor="Hand"
+                                            FocusVisualStyle="{x:Null}">
+                                        <Border CornerRadius="20"
+                                                Padding="20"
+                                                Margin="0,10">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
+                                                    <Setter Property="Opacity" Value="0.95" />
+                                                    <Setter Property="BorderBrush" Value="#22FFFFFF" />
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect BlurRadius="16"
+                                                                              ShadowDepth="0"
+                                                                              Opacity="0.35" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Position}" Value="1">
+                                                            <Setter Property="Background" Value="{StaticResource OptionBrushB}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Position}" Value="2">
+                                                            <Setter Property="Background" Value="{StaticResource OptionBrushC}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Position}" Value="3">
+                                                            <Setter Property="Background" Value="{StaticResource OptionBrushD}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Position}" Value="4">
+                                                            <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="White" />
+                                                            <Setter Property="BorderThickness" Value="4" />
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="#CCFFFFFF" />
+                                                            <Setter Property="BorderThickness" Value="3" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsIncorrectSelection}" Value="True">
+                                                            <Setter Property="Background" Value="#55FF5B5B" />
+                                                            <Setter Property="BorderBrush" Value="#FFFF2E2E" />
+                                                            <Setter Property="BorderThickness" Value="3" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <DockPanel LastChildFill="True">
+                                                <Border Width="48"
+                                                        Height="48"
+                                                        CornerRadius="24"
+                                                        Margin="0,0,16,0"
+                                                        Background="#33FFFFFF"
+                                                        BorderBrush="#55FFFFFF"
+                                                        BorderThickness="2">
+                                                    <TextBlock Text="{Binding Label}"
+                                                               FontSize="28"
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                                </Border>
+                                                <TextBlock Text="{Binding Text}"
+                                                           FontSize="32"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
                                                            VerticalAlignment="Center" />
-                                            </Border>
-                                            <TextBlock Text="{Binding Text}"
-                                                       FontSize="32"
-                                                       FontWeight="SemiBold"
-                                                       TextWrapping="Wrap"
-                                                       VerticalAlignment="Center" />
-                                        </DockPanel>
-                                    </Border>
+                                            </DockPanel>
+                                        </Border>
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -252,6 +261,67 @@
                        Margin="0,0,24,24" />
         </Grid>
 
+
+        <Grid x:Name="PositiveFeedbackOverlay"
+              Background="#8010324A"
+              Visibility="{Binding ShowCorrectSelectionFeedback, Converter={StaticResource BooleanToVisibilityConverter}}"
+              IsHitTestVisible="False">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="12">
+                <TextBlock Text="Harika!"
+                           FontSize="80"
+                           FontWeight="Black"
+                           Foreground="White"
+                           TextAlignment="Center" />
+                <TextBlock Text="Dogru sectin, boyle devam!"
+                           FontSize="34"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource ProjectorAccentBrush}"
+                           TextAlignment="Center" />
+                <Border CornerRadius="16"
+                        Padding="12,6"
+                        Background="#55FFFFFF"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="*"
+                               FontSize="44"
+                               FontWeight="Black"
+                               Foreground="#FF6FE4FF" />
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="NegativeFeedbackOverlay"
+              Background="#80261122"
+              Visibility="{Binding ShowIncorrectSelectionFeedback, Converter={StaticResource BooleanToVisibilityConverter}}"
+              IsHitTestVisible="False">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="10">
+                <TextBlock Text="Tekrar dene!"
+                           FontSize="64"
+                           FontWeight="Black"
+                           Foreground="White"
+                           TextAlignment="Center" />
+                <Border Width="120"
+                        Height="120"
+                        CornerRadius="60"
+                        Background="#55FFFFFF"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Padding="12">
+                    <TextBlock Text=":("
+                               FontSize="54"
+                               FontWeight="Black"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text="Bir sonraki sefer daha dikkatli bak."
+                           FontSize="28"
+                           Foreground="{StaticResource ProjectorAccentBrush}"
+                           TextAlignment="Center" />
+            </StackPanel>
+        </Grid>
         <Grid x:Name="CelebrationOverlay"
               Visibility="{Binding ShowCelebration, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel HorizontalAlignment="Center"
@@ -301,3 +371,6 @@
         </Grid>
     </Grid>
 </Window>
+
+
+

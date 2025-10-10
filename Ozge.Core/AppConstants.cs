@@ -12,6 +12,7 @@ public static class AppConstants
     public const string BackupsFolderName = "Backups";
     public const string LogsFolderName = "Logs";
     public const string TessDataFolderName = "tessdata";
+    public const string SoundSettingsFileName = "soundsettings.json";
 
     public static string GetLocalAppDataRoot()
     {
