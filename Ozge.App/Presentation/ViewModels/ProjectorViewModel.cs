@@ -266,5 +266,13 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
         _feedbackCancellation.Dispose();
         _feedbackCancellation = null;
     }
+
+    partial void OnShowCelebrationChanged(bool value)
+    {
+        if (value)
+        {
+            _ = _soundEffectPlayer.PlayCelebrationAsync();
+        }
+    }
 }
 

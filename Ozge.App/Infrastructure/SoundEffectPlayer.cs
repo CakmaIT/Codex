@@ -27,6 +27,16 @@ public sealed class SoundEffectPlayer : ISoundEffectPlayer, IDisposable
 
     public Task PlayIncorrectAsync() => PlayInternalAsync(_settingsService.Current.IncorrectSoundPath);
 
+    public Task PlayCelebrationAsync()
+    {
+        var settings = _settingsService.Current;
+        var target = string.IsNullOrWhiteSpace(settings.CelebrationSoundPath)
+            ? settings.CorrectSoundPath
+            : settings.CelebrationSoundPath;
+
+        return PlayInternalAsync(target);
+    }
+
     public Task PreviewAsync(string? filePath) => PlayInternalAsync(filePath);
 
     private Task PlayInternalAsync(string? filePath)

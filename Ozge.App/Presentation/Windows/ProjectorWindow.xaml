@@ -193,7 +193,6 @@
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
                                                             <Setter Property="BorderBrush" Value="White" />
-                                                            <Setter Property="BorderThickness" Value="4" />
                                                             <Setter Property="Opacity" Value="1" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
