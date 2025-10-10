@@ -138,9 +138,6 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private bool isQuizMenuActive;
 
     [ObservableProperty]
-    private bool isQuestionBankMenuActive;
-
-    [ObservableProperty]
     private bool isImportMenuActive;
 
     [ObservableProperty]
@@ -177,10 +174,16 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private string? incorrectSoundPath;
 
     [ObservableProperty]
+    private string? celebrationSoundPath;
+
+    [ObservableProperty]
     private string correctSoundDisplay = "Ses secilmedi";
 
     [ObservableProperty]
     private string incorrectSoundDisplay = "Ses secilmedi";
+
+    [ObservableProperty]
+    private string celebrationSoundDisplay = "Ses secilmedi";
     partial void OnCorrectSoundPathChanged(string? value)
     {
         CorrectSoundDisplay = FormatSoundDisplay(value);
@@ -189,6 +192,11 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     partial void OnIncorrectSoundPathChanged(string? value)
     {
         IncorrectSoundDisplay = FormatSoundDisplay(value);
+    }
+
+    partial void OnCelebrationSoundPathChanged(string? value)
+    {
+        CelebrationSoundDisplay = FormatSoundDisplay(value);
     }
 
     [ObservableProperty]
@@ -360,7 +368,6 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         var menus = new[]
         {
             DashboardMenuOptionViewModel.Create(DashboardMenuKey.QuizControl, "Quiz Kontrol", "Canli oturumu yonet"),
-            DashboardMenuOptionViewModel.Create(DashboardMenuKey.QuestionBank, "Soru Bankasi", "Kayitli icerigi goruntule"),
             DashboardMenuOptionViewModel.Create(DashboardMenuKey.Import, "Icerik Aktar", "Yeni sorular ekle"),
             DashboardMenuOptionViewModel.Create(DashboardMenuKey.PeopleManagement, "Kisi Ekleme", "Sinif, ogrenci ve takim islemleri")
         };
@@ -374,7 +381,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         var subMenus = new[]
         {
             QuizSubMenuOptionViewModel.Create(QuizSubMenuKey.Control, "Quiz Yönetimi"),
-            QuizSubMenuOptionViewModel.Create(QuizSubMenuKey.QuestionBank, "Soru Bankası")
+            QuizSubMenuOptionViewModel.Create(QuizSubMenuKey.QuestionBank, "Soru Bankası Seç")
         };
 
         QuizSubMenus.ReplaceWith(subMenus);
@@ -385,17 +392,23 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     {
         IsQuizControlSubMenuActive = value?.Key == QuizSubMenuKey.Control;
         IsQuizQuestionBankSubMenuActive = value?.Key == QuizSubMenuKey.QuestionBank;
+        EnsureQuestionBankLoaded();
+    }
 
-        if (IsQuizQuestionBankSubMenuActive &&
-            QuestionBank.Count == 0 &&
-            !IsQuestionBankLoading &&
-            SelectedClass is not null &&
-            SelectedUnit is not null)
+    private void EnsureQuestionBankLoaded()
+    {
+        if (!IsQuizQuestionBankSubMenuActive ||
+            QuestionBank.Count > 0 ||
+            IsQuestionBankLoading ||
+            SelectedClass is null ||
+            SelectedUnit is null)
         {
-            if (LoadQuestionBankCommand.CanExecute(null))
-            {
-                LoadQuestionBankCommand.Execute(null);
-            }
+            return;
+        }
+
+        if (LoadQuestionBankCommand.CanExecute(null))
+        {
+            LoadQuestionBankCommand.Execute(null);
         }
     }
 
@@ -403,6 +416,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     {
         CorrectSoundPath = settings.CorrectSoundPath;
         IncorrectSoundPath = settings.IncorrectSoundPath;
+        CelebrationSoundPath = settings.CelebrationSoundPath;
     }
 
     private void OnSoundSettingsChanged(object? sender, SoundSettings settings)
@@ -691,7 +705,13 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return;
         }
 
-        UpdateSoundSettings(filePath, null, updateCorrect: true, updateIncorrect: false);
+        UpdateSoundSettings(
+            filePath,
+            null,
+            null,
+            updateCorrect: true,
+            updateIncorrect: false,
+            updateCelebration: false);
     }
 
     [RelayCommand]
@@ -702,7 +722,13 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return;
         }
 
-        UpdateSoundSettings(null, null, updateCorrect: true, updateIncorrect: false);
+        UpdateSoundSettings(
+            null,
+            null,
+            null,
+            updateCorrect: true,
+            updateIncorrect: false,
+            updateCelebration: false);
     }
 
     [RelayCommand]
@@ -720,7 +746,13 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return;
         }
 
-        UpdateSoundSettings(null, filePath, updateCorrect: false, updateIncorrect: true);
+        UpdateSoundSettings(
+            null,
+            filePath,
+            null,
+            updateCorrect: false,
+            updateIncorrect: true,
+            updateCelebration: false);
     }
 
     [RelayCommand]
@@ -731,7 +763,13 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             return;
         }
 
-        UpdateSoundSettings(null, null, updateCorrect: false, updateIncorrect: true);
+        UpdateSoundSettings(
+            null,
+            null,
+            null,
+            updateCorrect: false,
+            updateIncorrect: true,
+            updateCelebration: false);
     }
 
     [RelayCommand]
@@ -740,7 +778,54 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         await _soundEffectPlayer.PreviewAsync(IncorrectSoundPath);
     }
 
-    private void UpdateSoundSettings(string? correct, string? incorrect, bool updateCorrect, bool updateIncorrect)
+    [RelayCommand]
+    private void SelectCelebrationSound()
+    {
+        var filePath = PromptForSoundFile();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(
+            null,
+            null,
+            filePath,
+            updateCorrect: false,
+            updateIncorrect: false,
+            updateCelebration: true);
+    }
+
+    [RelayCommand]
+    private void ClearCelebrationSound()
+    {
+        if (string.IsNullOrWhiteSpace(CelebrationSoundPath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(
+            null,
+            null,
+            null,
+            updateCorrect: false,
+            updateIncorrect: false,
+            updateCelebration: true);
+    }
+
+    [RelayCommand]
+    private async Task PreviewCelebrationSoundAsync()
+    {
+        await _soundEffectPlayer.PreviewAsync(CelebrationSoundPath);
+    }
+
+    private void UpdateSoundSettings(
+        string? correct,
+        string? incorrect,
+        string? celebration,
+        bool updateCorrect,
+        bool updateIncorrect,
+        bool updateCelebration)
     {
         _soundSettingsService.Update(current =>
         {
@@ -753,6 +838,11 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             if (updateIncorrect)
             {
                 updated = updated with { IncorrectSoundPath = incorrect };
+            }
+
+            if (updateCelebration)
+            {
+                updated = updated with { CelebrationSoundPath = celebration };
             }
 
             return updated;
@@ -999,9 +1089,11 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
                 CancellationToken.None);
 
             QuestionBank.Clear();
+            var order = 1;
             foreach (var question in quizData.Questions)
             {
                 QuestionBank.Add(new QuestionBankItemViewModel(
+                    order++,
                     question.Prompt,
                     question.CorrectAnswer,
                     question.Options));
@@ -1755,7 +1847,6 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         var key = value?.Key ?? DashboardMenuKey.QuizControl;
 
         IsQuizMenuActive = key == DashboardMenuKey.QuizControl;
-        IsQuestionBankMenuActive = key == DashboardMenuKey.QuestionBank;
         IsImportMenuActive = key == DashboardMenuKey.Import;
         IsPeopleMenuActive = key == DashboardMenuKey.PeopleManagement;
 
@@ -1773,18 +1864,6 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
             SelectedStudentToRemove ??= SelectedClassForStudentRemoval?.Students.FirstOrDefault();
             SelectedTeamToRemove ??= SelectedClassForTeamRemoval?.Groups.FirstOrDefault();
-        }
-
-        if (IsQuestionBankMenuActive &&
-            QuestionBank.Count == 0 &&
-            !IsQuestionBankLoading &&
-            SelectedClass is not null &&
-            SelectedUnit is not null)
-        {
-            if (LoadQuestionBankCommand.CanExecute(null))
-            {
-                LoadQuestionBankCommand.Execute(null);
-            }
         }
 
         RefreshProjectorStatus();
@@ -1841,6 +1920,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         });
 
         _projectorWindowManager.RevealAnswers(false);
+        EnsureQuestionBankLoaded();
     }
 
     partial void OnSelectedUnitChanged(UnitSummary? value)
@@ -1872,6 +1952,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
         _projectorWindowManager.RevealAnswers(false);
         UpdateQuizStateFlags(_stateStore.Current);
+        EnsureQuestionBankLoaded();
     }
 
     private void RefreshProjectorStatus()
@@ -1971,7 +2052,6 @@ public sealed class ProjectorDisplayOptionViewModel
 public enum DashboardMenuKey
 {
     QuizControl,
-    QuestionBank,
     Import,
     PeopleManagement
 }

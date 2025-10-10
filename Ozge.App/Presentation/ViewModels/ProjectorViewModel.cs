@@ -245,6 +245,14 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
         }
     }
 
+    partial void OnShowCelebrationChanged(bool value)
+    {
+        if (value)
+        {
+            _ = _soundEffectPlayer.PlayCelebrationAsync();
+        }
+    }
+
     private void ResetOptionStates()
     {
         foreach (var option in QuizOptions)
