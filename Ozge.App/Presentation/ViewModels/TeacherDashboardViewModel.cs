@@ -118,6 +118,15 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private string questionBankStatus = "Soru bankasi yuklenmedi";
 
     [ObservableProperty]
+    private string? celebrationSoundPath;
+
+    [ObservableProperty]
+    private string celebrationSoundDisplayName = "Ses seçilmedi";
+
+    [ObservableProperty]
+    private bool hasCelebrationSound;
+
+    [ObservableProperty]
     private ProjectorDisplayOptionViewModel? selectedProjectorDisplay;
 
     [ObservableProperty]
@@ -365,6 +374,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
             IsAnswerRevealEnabled = state.IsAnswerRevealEnabled;
             IsProjectorFrozen = state.IsProjectorFrozen;
+            UpdateCelebrationSoundInfo(state.CelebrationSoundPath);
 
             var preferredDisplayId = state.PreferredProjectorDisplayId
                 ?? _projectorWindowManager.CurrentDisplayId
@@ -811,9 +821,11 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
                 CancellationToken.None);
 
             QuestionBank.Clear();
+            var order = 1;
             foreach (var question in quizData.Questions)
             {
                 QuestionBank.Add(new QuestionBankItemViewModel(
+                    order++,
                     question.Prompt,
                     question.CorrectAnswer,
                     question.Options));
@@ -837,6 +849,58 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
             IsQuestionBankLoading = false;
             UpdateQuizStateFlags(_stateStore.Current);
         }
+    }
+
+    [RelayCommand]
+    private void OpenQuestionBankMenu()
+    {
+        var target = DashboardMenus.FirstOrDefault(menu => menu.Key == DashboardMenuKey.QuestionBank);
+        if (target is not null)
+        {
+            SelectedMenu = target;
+        }
+    }
+
+    [RelayCommand]
+    private void SelectCelebrationSound()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "Ses Dosyalari|*.mp3;*.wav;*.wma;*.m4a|Tum Dosyalar|*.*",
+            Title = "Kutlama sesi sec"
+        };
+
+        if (dialog.ShowDialog() != true || string.IsNullOrWhiteSpace(dialog.FileName))
+        {
+            return;
+        }
+
+        var path = dialog.FileName;
+
+        _stateStore.Update(builder =>
+        {
+            builder.CelebrationSoundPath = path;
+            return builder;
+        });
+
+        UpdateCelebrationSoundInfo(path);
+    }
+
+    [RelayCommand]
+    private void ClearCelebrationSound()
+    {
+        if (!HasCelebrationSound)
+        {
+            return;
+        }
+
+        _stateStore.Update(builder =>
+        {
+            builder.CelebrationSoundPath = null;
+            return builder;
+        });
+
+        UpdateCelebrationSoundInfo(null);
     }
 
     [RelayCommand]
@@ -1701,6 +1765,16 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         var prefix = IsProjectorFrozen ? "Donduruldu" : "Aktif";
         ProjectorStatus = $"{prefix}{fullScreenSuffix} - {displaySummary}";
         ProjectorFullScreenButtonText = _projectorWindowManager.IsFullScreen ? "Tam Ekrandan Cik" : "Tam Ekran Ac";
+    }
+
+    private void UpdateCelebrationSoundInfo(string? path)
+    {
+        CelebrationSoundPath = path;
+        var hasSound = !string.IsNullOrWhiteSpace(path);
+        HasCelebrationSound = hasSound;
+        CelebrationSoundDisplayName = hasSound
+            ? Path.GetFileName(path!)
+            : "Ses seçilmedi";
     }
 }
 
