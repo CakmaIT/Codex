@@ -18,6 +18,7 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
     private readonly ISoundEffectPlayer _soundEffectPlayer;
     private AppState _latestState = AppState.Empty;
     private CancellationTokenSource? _feedbackCancellation;
+    private bool _hasCelebrationSoundPlayed;
 
     public ObservableCollection<GroupScoreItem> Leaderboard { get; } = new();
     public ObservableCollection<ProjectorQuizOptionViewModel> QuizOptions { get; } = new();
@@ -252,6 +253,22 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
             option.IsSelected = false;
             option.IsIncorrectSelection = false;
             option.IsHighlighted = ShowAnswers && option.IsCorrect;
+        }
+    }
+
+    partial void OnShowCelebrationChanged(bool value)
+    {
+        if (value)
+        {
+            if (!_hasCelebrationSoundPlayed)
+            {
+                _hasCelebrationSoundPlayed = true;
+                _ = _soundEffectPlayer.PlayCelebrationAsync();
+            }
+        }
+        else
+        {
+            _hasCelebrationSoundPlayed = false;
         }
     }
 
