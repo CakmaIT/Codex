@@ -390,8 +390,6 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
@@ -436,398 +434,546 @@
                                 </StackPanel>
                             </WrapPanel>
 
-                            <WrapPanel Grid.Row="1"
-                                       Margin="0,0,0,12">
-                                <Button Content="Quiz Baslat"
-                                        Style="{StaticResource AccentButtonStyle}"
-                                        Command="{Binding StartQuizCommand}"
-                                        IsEnabled="{Binding CanStartQuiz}"
-                                        Margin="0,0,12,12" />
-                                <Button Content="{Binding PreviousQuestionButtonText}"
-                                        Style="{StaticResource SecondaryButtonStyle}"
-                                        Command="{Binding PreviousQuestionCommand}"
-                                        IsEnabled="{Binding CanGoBackQuestion}"
-                                        Margin="0,0,12,12" />
-                                <Button Content="{Binding NextQuestionButtonText}"
-                                        Style="{StaticResource SecondaryButtonStyle}"
-                                        Command="{Binding NextQuestionCommand}"
-                                        IsEnabled="{Binding CanAdvanceQuestion}"
-                                        Margin="0,0,12,12" />
-                        <Button Content="Soru Ekle"
-                                Style="{StaticResource AccentButtonStyle}"
-                                Command="{Binding AddQuestionCommand}"
-                                Margin="0,0,12,12" />
-                        <Button Content="Soruyu Duzenle"
-                                Style="{StaticResource SecondaryButtonStyle}"
-                                Command="{Binding EditCurrentQuestionCommand}"
-                                Margin="0,0,12,12" />
-                        <Button Content="Quiz Bitir"
-                                Style="{StaticResource SecondaryButtonStyle}"
-                                Command="{Binding EndQuizCommand}"
-                                IsEnabled="{Binding CanEndQuiz}"
-                                        Margin="0,0,12,12" />
-                                <Button Content="{Binding AnswerRevealButtonText}"
-                                        Style="{StaticResource AccentButtonStyle}"
-                                        Command="{Binding ToggleAnswerRevealCommand}"
-                                        Margin="0,0,12,12" />
-                            </WrapPanel>
+                            <ListBox Grid.Row="1"
+                                     ItemsSource="{Binding QuizSubMenus}"
+                                     SelectedItem="{Binding SelectedQuizSubMenu, Mode=TwoWay}"
+                                     ItemContainerStyle="{StaticResource QuizSubMenuItemStyle}"
+                                     Margin="0,0,0,16">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:QuizSubMenuOptionViewModel}">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontWeight="SemiBold" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                            <StackPanel Grid.Row="2"
-                                        Orientation="Horizontal"
-                                        Visibility="{Binding IsQuizLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <ProgressBar Width="160"
-                                             Height="10"
-                                             IsIndeterminate="True"
-                                             Margin="0,0,8,0" />
-                                <TextBlock Text="Quiz yukleniyor..."
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
+                            <Grid Grid.Row="2">
+                                <Grid x:Name="QuizControlPanel"
+                                      Visibility="{Binding IsQuizControlSubMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="3"
-                                        Margin="0,12,0,0">
-                                <Border Background="#1B2238"
-                                        CornerRadius="16"
-                                        Padding="16"
-                                        Margin="0,0,0,12"
-                                        Visibility="{Binding IsQuestionEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <StackPanel>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="Soru Duzenleme"
+                                    <WrapPanel Grid.Row="0"
+                                               Margin="0,0,0,12">
+                                        <Button Content="Quiz Baslat"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding StartQuizCommand}"
+                                                IsEnabled="{Binding CanStartQuiz}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="{Binding PreviousQuestionButtonText}"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding PreviousQuestionCommand}"
+                                                IsEnabled="{Binding CanGoBackQuestion}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="{Binding NextQuestionButtonText}"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding NextQuestionCommand}"
+                                                IsEnabled="{Binding CanAdvanceQuestion}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="Soru Ekle"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding AddQuestionCommand}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="Soruyu Duzenle"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding EditCurrentQuestionCommand}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="Quiz Bitir"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding EndQuizCommand}"
+                                                IsEnabled="{Binding CanEndQuiz}"
+                                                Margin="0,0,12,12" />
+                                        <Button Content="{Binding AnswerRevealButtonText}"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Command="{Binding ToggleAnswerRevealCommand}"
+                                                Margin="0,0,12,12" />
+                                    </WrapPanel>
+
+                                    <StackPanel Grid.Row="1"
+                                                Orientation="Horizontal"
+                                                Visibility="{Binding IsQuizLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ProgressBar Width="160"
+                                                     Height="10"
+                                                     IsIndeterminate="True"
+                                                     Margin="0,0,8,0" />
+                                        <TextBlock Text="Quiz yukleniyor..."
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="2"
+                                                Margin="0,12,0,0"
+                                               >
+                                        <Border Background="#1B2238"
+                                                CornerRadius="16"
+                                                Padding="16"
+                                                Visibility="{Binding IsQuestionEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Soru Duzenleme"
+                                                               FontSize="18"
+                                                               FontWeight="Bold" />
+                                                    <Button Grid.Column="1"
+                                                            Content="Duzenlemeyi Iptal"
+                                                            Style="{StaticResource SecondaryButtonStyle}"
+                                                            Command="{Binding CancelQuestionEditCommand}"
+                                                            Margin="16,0,0,0" />
+                                                </Grid>
+
+                                                <TextBox Text="{Binding EditableQuestionPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         Margin="0,12,0,12"
+                                                         Background="#12172A"
+                                                         Foreground="White"
+                                                         BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                         Padding="8"
+                                                         AcceptsReturn="True"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="80" />
+
+                                                <ItemsControl ItemsSource="{Binding EditableQuestionOptions}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type viewModels:EditableQuizOptionViewModel}">
+                                                            <Border Background="#22182C4A"
+                                                                    CornerRadius="12"
+                                                                    Padding="10"
+                                                                    Margin="0,0,0,8">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <RadioButton Grid.Column="0"
+                                                                                 Margin="0,0,12,0"
+                                                                                 VerticalAlignment="Center"
+                                                                                 GroupName="CurrentQuestionCorrectOption"
+                                                                                 IsChecked="{Binding IsCorrect, Mode=TwoWay}"
+                                                                                 Foreground="{StaticResource TeacherAccentBrush}"
+                                                                                 ToolTip="Dogru secenek" />
+                                                                    <TextBox Grid.Column="1"
+                                                                             Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                             Background="#12172A"
+                                                                             Foreground="White"
+                                                                             BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                                             Padding="6"
+                                                                             TextWrapping="Wrap" />
+                                                                    <Button Grid.Column="2"
+                                                                            Content="Sil"
+                                                                            Style="{StaticResource SecondaryButtonStyle}"
+                                                                            Command="{Binding DataContext.RemoveEditableOptionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Margin="12,0,0,0" />
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+
+                                                <StackPanel Orientation="Horizontal"
+                                                            Margin="0,12,0,0">
+                                                    <Button Content="Secenek Ekle"
+                                                            Style="{StaticResource SecondaryButtonStyle}"
+                                                            Command="{Binding AddEditableOptionCommand}"
+                                                            Margin="0,0,12,0" />
+                                                    <Button Content="Soruyu Kaydet"
+                                                            Style="{StaticResource AccentButtonStyle}"
+                                                            Command="{Binding SaveQuestionEditCommand}" />
+                                                </StackPanel>
+
+                                                <TextBlock Text="{Binding QuestionEditStatusMessage}"
+                                                           Margin="0,12,0,0"
+                                                           Foreground="{StaticResource TeacherAccentBrush}"
+                                                           TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Background="#1B2238"
+                                                CornerRadius="16"
+                                                Padding="16">
+                                            <StackPanel>
+                                                <TextBlock Text="Ses Ayarlari"
+                                                           FontSize="18"
+                                                           FontWeight="Bold" />
+                                                <StackPanel Margin="0,12,0,0"
+                                                           >
+                                                    <Grid Margin="0,0,0,4">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Dogru Cevap Sesi"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding CorrectSoundDisplay}"
+                                                                   Margin="12,0,12,0"
+                                                                   VerticalAlignment="Center"
+                                                                   Opacity="0.8" />
+                                                        <Button Grid.Column="2"
+                                                                Content="Sec"
+                                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                                Command="{Binding SelectCorrectSoundCommand}"
+                                                                Margin="0,0,8,0" />
+                                                        <StackPanel Grid.Column="3"
+                                                                    Orientation="Horizontal">
+                                                            <Button Content="Temizle"
+                                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                                    Command="{Binding ClearCorrectSoundCommand}"
+                                                                    Margin="0,0,8,0" />
+                                                            <Button Content="Dinle"
+                                                                    Style="{StaticResource AccentButtonStyle}"
+                                                                    Command="{Binding PreviewCorrectSoundCommand}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid Margin="0,0,0,4">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Yanlis Cevap Sesi"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding IncorrectSoundDisplay}"
+                                                                   Margin="12,0,12,0"
+                                                                   VerticalAlignment="Center"
+                                                                   Opacity="0.8" />
+                                                        <Button Grid.Column="2"
+                                                                Content="Sec"
+                                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                                Command="{Binding SelectIncorrectSoundCommand}"
+                                                                Margin="0,0,8,0" />
+                                                        <StackPanel Grid.Column="3"
+                                                                    Orientation="Horizontal">
+                                                            <Button Content="Temizle"
+                                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                                    Command="{Binding ClearIncorrectSoundCommand}"
+                                                                    Margin="0,0,8,0" />
+                                                            <Button Content="Dinle"
+                                                                    Style="{StaticResource AccentButtonStyle}"
+                                                                    Command="{Binding PreviewIncorrectSoundCommand}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="2*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Kutlama Sesi"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding CelebrationSoundDisplay}"
+                                                                   Margin="12,0,12,0"
+                                                                   VerticalAlignment="Center"
+                                                                   Opacity="0.8" />
+                                                        <Button Grid.Column="2"
+                                                                Content="Sec"
+                                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                                Command="{Binding SelectCelebrationSoundCommand}"
+                                                                Margin="0,0,8,0" />
+                                                        <StackPanel Grid.Column="3"
+                                                                    Orientation="Horizontal">
+                                                            <Button Content="Temizle"
+                                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                                    Command="{Binding ClearCelebrationSoundCommand}"
+                                                                    Margin="0,0,8,0" />
+                                                            <Button Content="Dinle"
+                                                                    Style="{StaticResource AccentButtonStyle}"
+                                                                    Command="{Binding PreviewCelebrationSoundCommand}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Grid Grid.Row="3"
+                                          Margin="0,20,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Background="#1B2238"
+                                                CornerRadius="18"
+                                                Padding="20"
+                                                Margin="0,0,20,0">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding CurrentQuestionTitle}"
+                                                           FontSize="22"
+                                                           FontWeight="Bold" />
+                                                <TextBlock Text="{Binding SelectedClass.Name, StringFormat=Sinif: {0}}"
+                                                           Margin="0,6,0,0"
+                                                           Opacity="0.8" />
+                                                <Grid Margin="0,16,0,0">
+                                                    <ProgressBar Minimum="0"
+                                                                 Maximum="1"
+                                                                 Height="12"
+                                                                 Value="{Binding QuizProgressValue}">
+                                                        <ProgressBar.Resources>
+                                                            <SolidColorBrush x:Key="ProgressBarForeground"
+                                                                             Color="#FF6BEFFF" />
+                                                            <SolidColorBrush x:Key="ProgressBarBackground"
+                                                                             Color="#33162D56" />
+                                                        </ProgressBar.Resources>
+                                                    </ProgressBar>
+                                                </Grid>
+                                                <TextBlock Text="{Binding QuizProgressText}"
+                                                           Margin="0,10,0,0"
+                                                           FontSize="16" />
+                                                <TextBlock Text="{Binding QuizStatus}"
+                                                           Margin="0,4,0,12"
+                                                           Opacity="0.75" />
+
+                                                <TextBlock Text="Quiz baslatilmadi."
+                                                           FontStyle="Italic"
+                                                           Opacity="0.7">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+
+                                                <ContentControl Content="{Binding CurrentQuestion}">
+                                                    <ContentControl.Style>
+                                                        <Style TargetType="ContentControl">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ContentControl.Style>
+                                                    <ContentControl.ContentTemplate>
+                                                        <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Prompt}"
+                                                                           FontSize="18"
+                                                                           FontWeight="SemiBold"
+                                                                           TextWrapping="Wrap" />
+                                                                <ItemsControl ItemsSource="{Binding Options}"
+                                                                              Margin="0,18,0,0">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate DataType="{x:Type viewModels:QuizOptionItemViewModel}">
+                                                                            <Border CornerRadius="14"
+                                                                                    Padding="12"
+                                                                                    Margin="0,0,0,10">
+                                                                                <Border.Style>
+                                                                                    <Style TargetType="Border">
+                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
+                                                                                        <Style.Triggers>
+                                                                                            <DataTrigger Binding="{Binding Position}" Value="1">
+                                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushB}" />
+                                                                                            </DataTrigger>
+                                                                                            <DataTrigger Binding="{Binding Position}" Value="2">
+                                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushC}" />
+                                                                                            </DataTrigger>
+                                                                                            <DataTrigger Binding="{Binding Position}" Value="3">
+                                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushD}" />
+                                                                                            </DataTrigger>
+                                                                                            <DataTrigger Binding="{Binding Position}" Value="4">
+                                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
+                                                                                            </DataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </Border.Style>
+                                                                                <DockPanel LastChildFill="True">
+                                                                                    <TextBlock Text="{Binding Text}"
+                                                                                               FontWeight="SemiBold"
+                                                                                               TextWrapping="Wrap" />
+                                                                                    <TextBlock Text="✔"
+                                                                                               FontWeight="Bold"
+                                                                                               Margin="8,0,0,0"
+                                                                                               Visibility="{Binding DataContext.IsAnswerRevealEnabled, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                                               DockPanel.Dock="Right" />
+                                                                                </DockPanel>
+                                                                            </Border>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ContentControl.ContentTemplate>
+                                                </ContentControl>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Grid.Column="1"
+                                                Background="#331C3563"
+                                                CornerRadius="18"
+                                                Padding="20">
+                                            <StackPanel>
+                                                <TextBlock Text="Quiz Yol Haritasi"
+                                                           FontSize="18"
+                                                           FontWeight="SemiBold"
+                                                           Margin="0,0,0,12" />
+                                                <ListBox ItemsSource="{Binding QuizQuestions}"
+                                                         SelectedItem="{Binding CurrentQuestion}"
+                                                         IsHitTestVisible="False"
+                                                         Background="Transparent"
+                                                         BorderThickness="0">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
+                                                            <Border CornerRadius="12"
+                                                                    Padding="12"
+                                                                    Margin="0,0,0,10">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Background" Value="#1B2238" />
+                                                                        <Setter Property="Opacity" Value="0.8" />
+                                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                                        <Setter Property="BorderThickness" Value="1" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                                                <Setter Property="Background" Value="#4433A2FF" />
+                                                                                <Setter Property="Opacity" Value="1" />
+                                                                                <Setter Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding DisplayPrompt}"
+                                                                               FontWeight="SemiBold"
+                                                                               TextWrapping="Wrap" />
+                                                                    <TextBlock Text="{Binding Options.Count, StringFormat=Secenek sayisi: {0}}"
+                                                                               Opacity="0.7"
+                                                                               Margin="0,4,0,0" />
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+
+                                <StackPanel x:Name="QuizQuestionBankPanel"
+                                            Visibility="{Binding IsQuizQuestionBankSubMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,0,12">
+                                        <Button Content="Soru Bankasini Yukle"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding LoadQuestionBankCommand}"
+                                                Margin="0,0,12,0" />
+                                        <Button Content="PDF'den Soru Aktar"
+                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                Command="{Binding ImportQuestionsCommand}" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,0,8"
+                                                Visibility="{Binding IsQuestionBankLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ProgressBar Width="160"
+                                                     Height="10"
+                                                     IsIndeterminate="True"
+                                                     Margin="0,0,8,0" />
+                                        <TextBlock Text="Soru bankasi yukleniyor..."
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                    <TextBlock Text="{Binding QuestionBankStatus}"
+                                               Opacity="0.8"
+                                               Margin="0,0,0,8" />
+
+                                    <TextBlock Text="{Binding QuestionBank.Count, StringFormat=Listelenen Soru Sayisi: {0}}"
+                                               FontWeight="SemiBold"
+                                               Margin="0,0,0,12" />
+
+                                    <Border Background="#22182C4A"
+                                            CornerRadius="16"
+                                            Padding="16"
+                                            MaxHeight="360">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding QuestionBank}"
+                                                          AlternationCount="1000">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type viewModels:QuestionBankItemViewModel}">
+                                                        <Border CornerRadius="12"
+                                                                Padding="12"
+                                                                Margin="0,0,0,10"
+                                                                Background="#1B2238"
+                                                                BorderBrush="#2C3A5A"
+                                                                BorderThickness="1">
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Prompt}"
+                                                                           FontSize="16"
+                                                                           FontWeight="SemiBold"
+                                                                           TextWrapping="Wrap" />
+                                                                <TextBlock Text="{Binding CorrectAnswer, StringFormat=Dogru Cevap: {0}}"
+                                                                           Margin="0,6,0,0"
+                                                                           Opacity="0.85" />
+                                                                <TextBlock Text="{Binding Options.Count, StringFormat=Secenek Sayisi: {0}}"
+                                                                           Margin="0,2,0,0"
+                                                                           Opacity="0.65" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <Border Background="#1B2238"
+                                            CornerRadius="16"
+                                            Padding="16"
+                                            Margin="0,16,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Toplu Soru Ekleme"
                                                        FontSize="18"
                                                        FontWeight="Bold" />
-                                            <Button Grid.Column="1"
-                                                    Content="Duzenlemeyi Iptal"
-                                                    Style="{StaticResource SecondaryButtonStyle}"
-                                                    Command="{Binding CancelQuestionEditCommand}"
-                                                    Margin="16,0,0,0" />
-                                        </Grid>
-
-                                        <TextBox Text="{Binding EditableQuestionPrompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0,12,0,12"
-                                                 Background="#12172A"
-                                                 Foreground="White"
-                                                 BorderBrush="{StaticResource TeacherAccentMutedBrush}"
-                                                 Padding="8"
-                                                 AcceptsReturn="True"
-                                                 TextWrapping="Wrap"
-                                                 MinHeight="80" />
-
-                                        <ItemsControl ItemsSource="{Binding EditableQuestionOptions}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type viewModels:EditableQuizOptionViewModel}">
-                                                    <Border Background="#22182C4A"
-                                                            CornerRadius="12"
-                                                            Padding="10"
-                                                            Margin="0,0,0,8">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="Auto" />
-                                                                <ColumnDefinition Width="*" />
-                                                                <ColumnDefinition Width="Auto" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <RadioButton Grid.Column="0"
-                                                                         Margin="0,0,12,0"
-                                                                         VerticalAlignment="Center"
-                                                                         GroupName="CurrentQuestionCorrectOption"
-                                                                         IsChecked="{Binding IsCorrect, Mode=TwoWay}"
-                                                                         Foreground="{StaticResource TeacherAccentBrush}"
-                                                                         ToolTip="Dogru secenek" />
-                                                            <TextBox Grid.Column="1"
-                                                                     Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                     Background="#12172A"
-                                                                     Foreground="White"
-                                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
-                                                                     Padding="6"
-                                                                     TextWrapping="Wrap" />
-                                                            <Button Grid.Column="2"
-                                                                    Content="Sil"
-                                                                    Style="{StaticResource SecondaryButtonStyle}"
-                                                                    Command="{Binding DataContext.RemoveEditableOptionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                    CommandParameter="{Binding}"
-                                                                    Margin="12,0,0,0" />
-                                                        </Grid>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-
-                                        <StackPanel Orientation="Horizontal"
-                                                    Margin="0,12,0,0">
-                                            <Button Content="Secenek Ekle"
-                                                    Style="{StaticResource SecondaryButtonStyle}"
-                                                    Command="{Binding AddEditableOptionCommand}"
-                                                    Margin="0,0,12,0" />
-                                            <Button Content="Soruyu Kaydet"
-                                                    Style="{StaticResource AccentButtonStyle}"
-                                                    Command="{Binding SaveQuestionEditCommand}" />
+                                            <TextBlock Text="Her soruyu bos satirla ayirin. Dogru secenegi '*' ile isaretleyin (ornegin *Dogru cevap)."
+                                                       Margin="0,8,0,12"
+                                                       TextWrapping="Wrap"
+                                                       Opacity="0.75" />
+                                            <TextBox Text="{Binding BulkQuestionInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     AcceptsReturn="True"
+                                                     TextWrapping="Wrap"
+                                                     VerticalScrollBarVisibility="Auto"
+                                                     MinHeight="160"
+                                                     Background="#12172A"
+                                                     Foreground="White"
+                                                     BorderBrush="{StaticResource TeacherAccentMutedBrush}"
+                                                     Padding="8" />
+                                            <StackPanel Orientation="Horizontal"
+                                                        Margin="0,12,0,0">
+                                                <Button Content="Toplu Sorulari Ekle"
+                                                        Style="{StaticResource AccentButtonStyle}"
+                                                        Command="{Binding AddBulkQuestionsCommand}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding BulkQuestionStatusMessage}"
+                                                       Margin="0,12,0,0"
+                                                       Foreground="{StaticResource TeacherAccentBrush}"
+                                                       TextWrapping="Wrap" />
                                         </StackPanel>
-
-                                        <TextBlock Text="{Binding QuestionEditStatusMessage}"
-                                                   Margin="0,12,0,0"
-                                                   Foreground="{StaticResource TeacherAccentBrush}"
-                                                   TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Border>
-
-                                <Border Background="#1B2238"
-                                        CornerRadius="16"
-                                        Padding="16">
-                                    <StackPanel>
-                                        <TextBlock Text="Toplu Soru Ekleme"
-                                                   FontSize="18"
-                                                   FontWeight="Bold" />
-                                        <TextBlock Text="Her soruyu bos satirla ayirin. Dogru secenegi '*' ile isaretleyin (ornegin *Dogru cevap)."
-                                                   Margin="0,8,0,12"
-                                                   TextWrapping="Wrap"
-                                                   Opacity="0.75" />
-                                        <TextBox Text="{Binding BulkQuestionInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 AcceptsReturn="True"
-                                                 TextWrapping="Wrap"
-                                                 VerticalScrollBarVisibility="Auto"
-                                                 MinHeight="160"
-                                                 Background="#12172A"
-                                                 Foreground="White"
-                                                 BorderBrush="{StaticResource TeacherAccentMutedBrush}"
-                                                 Padding="8" />
-                                        <StackPanel Orientation="Horizontal"
-                                                    Margin="0,12,0,0">
-                                            <Button Content="Toplu Sorulari Ekle"
-                                                    Style="{StaticResource AccentButtonStyle}"
-                                                    Command="{Binding AddBulkQuestionsCommand}" />
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding BulkQuestionStatusMessage}"
-                                                   Margin="0,12,0,0"
-                                                   Foreground="{StaticResource TeacherAccentBrush}"
-                                                   TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-
-                            <Grid Grid.Row="4"
-                                  Margin="0,20,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Border Background="#1B2238"
-                                        CornerRadius="18"
-                                        Padding="20"
-                                        Margin="0,0,20,0">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding CurrentQuestionTitle}"
-                                                   FontSize="22"
-                                                   FontWeight="Bold" />
-                                        <TextBlock Text="{Binding SelectedClass.Name, StringFormat=Sinif: {0}}"
-                                                   Margin="0,6,0,0"
-                                                   Opacity="0.8" />
-                                        <Grid Margin="0,16,0,0">
-                                            <ProgressBar Minimum="0"
-                                                         Maximum="1"
-                                                         Height="12"
-                                                         Value="{Binding QuizProgressValue}">
-                                                <ProgressBar.Resources>
-                                                    <SolidColorBrush x:Key="ProgressBarForeground"
-                                                                     Color="#FF6BEFFF" />
-                                                    <SolidColorBrush x:Key="ProgressBarBackground"
-                                                                     Color="#33162D56" />
-                                                </ProgressBar.Resources>
-                                            </ProgressBar>
-                                            <TextBlock Text="{Binding QuizProgressText}"
-                                                       HorizontalAlignment="Right"
-                                                       VerticalAlignment="Center"
-                                                       Margin="0,-2,4,0"
-                                                       FontWeight="Bold" />
-                                        </Grid>
-                                        <TextBlock Text="{Binding QuizStatus}"
-                                                   Margin="0,12,0,0"
-                                                   Opacity="0.8" />
-                                        <TextBlock Text="{Binding AnswerRevealStatus, StringFormat=Cevap Durumu: {0}}"
-                                                   Margin="0,4,0,12"
-                                                   Opacity="0.75" />
-
-                                        <TextBlock Text="Quiz baslatilmadi."
-                                                   FontStyle="Italic"
-                                                   Opacity="0.7">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-
-                                        <ContentControl Content="{Binding CurrentQuestion}">
-                                            <ContentControl.Style>
-                                                <Style TargetType="ContentControl">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding CurrentQuestion}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ContentControl.Style>
-                                            <ContentControl.ContentTemplate>
-                                                <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding Prompt}"
-                                                                   FontSize="18"
-                                                                   FontWeight="SemiBold"
-                                                                   TextWrapping="Wrap" />
-                                                        <ItemsControl ItemsSource="{Binding Options}"
-                                                                      Margin="0,18,0,0">
-                                                            <ItemsControl.ItemTemplate>
-                                                                <DataTemplate DataType="{x:Type viewModels:QuizOptionItemViewModel}">
-                                                                    <Border CornerRadius="14"
-                                                                            Padding="12"
-                                                                            Margin="0,0,0,10">
-                                                                        <Border.Style>
-                                                                            <Style TargetType="Border">
-                                                                                <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
-                                                                                <Style.Triggers>
-                                                                                    <DataTrigger Binding="{Binding Position}" Value="1">
-                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushB}" />
-                                                                                    </DataTrigger>
-                                                                                    <DataTrigger Binding="{Binding Position}" Value="2">
-                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushC}" />
-                                                                                    </DataTrigger>
-                                                                                    <DataTrigger Binding="{Binding Position}" Value="3">
-                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushD}" />
-                                                                                    </DataTrigger>
-                                                                                    <DataTrigger Binding="{Binding Position}" Value="4">
-                                                                                        <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
-                                                                                    </DataTrigger>
-                                                                                </Style.Triggers>
-                                                                            </Style>
-                                                                        </Border.Style>
-                                                                        <DockPanel LastChildFill="True">
-                                                                            <TextBlock Text="{Binding Text}"
-                                                                                       FontWeight="SemiBold"
-                                                                                       TextWrapping="Wrap" />
-                                                                            <TextBlock Text="✔"
-                                                                                       FontWeight="Bold"
-                                                                                       Margin="8,0,0,0"
-                                                                                       Visibility="{Binding DataContext.IsAnswerRevealEnabled, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                                                       DockPanel.Dock="Right" />
-                                                                        </DockPanel>
-                                                                    </Border>
-                                                                </DataTemplate>
-                                                            </ItemsControl.ItemTemplate>
-                                                        </ItemsControl>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ContentControl.ContentTemplate>
-                                        </ContentControl>
-                                    </StackPanel>
-                                </Border>
-
-                                <Border Grid.Column="1"
-                                        Background="#331C3563"
-                                        CornerRadius="18"
-                                        Padding="20">
-                                    <StackPanel>
-                                        <TextBlock Text="Quiz Yol Haritasi"
-                                                   FontSize="18"
-                                                   FontWeight="SemiBold"
-                                                   Margin="0,0,0,12" />
-                                        <ListBox ItemsSource="{Binding QuizQuestions}"
-                                                 SelectedItem="{Binding CurrentQuestion}"
-                                                 IsHitTestVisible="False"
-                                                 Background="Transparent"
-                                                 BorderThickness="0">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type viewModels:QuizQuestionViewModel}">
-                                                    <Border CornerRadius="12"
-                                                            Padding="12"
-                                                            Margin="0,0,0,10">
-                                                        <Border.Style>
-                                                            <Style TargetType="Border">
-                                                                <Setter Property="Background" Value="#1B2238" />
-                                                                <Setter Property="Opacity" Value="0.8" />
-                                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                                <Setter Property="BorderThickness" Value="1" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
-                                                                        <Setter Property="Background" Value="#4433A2FF" />
-                                                                        <Setter Property="Opacity" Value="1" />
-                                                                        <Setter Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding DisplayPrompt}"
-                                                                       FontWeight="SemiBold"
-                                                                       TextWrapping="Wrap" />
-                                                            <TextBlock Text="{Binding Options.Count, StringFormat=Secenek sayisi: {0}}"
-                                                                       Opacity="0.7"
-                                                                       Margin="0,4,0,0" />
-                                                        </StackPanel>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
-                                </Border>
+                                    </Border>
+                                </StackPanel>
                             </Grid>
                         </Grid>
-                        <Grid x:Name="QuestionBankContent"
-                              Visibility="{Binding IsQuestionBankMenuActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <StackPanel>
-                                <TextBlock Text="Soru Bankasi"
-                                           FontSize="24"
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,16" />
-
-                                <WrapPanel Margin="0,0,0,12">
-                                    <StackPanel Width="220"
-                                                Margin="0,0,16,12">
-                                        <TextBlock Text="Sinif Secimi"
-                                                   FontSize="13"
-                                                   FontWeight="SemiBold"
-                                                   Opacity="0.85" />
-                                        <ComboBox ItemsSource="{Binding Classes}"
-                                                  SelectedItem="{Binding SelectedClass, Mode=TwoWay}"
-                                                  DisplayMemberPath="Name"
-                                                  Padding="8,4"
-                                                  Background="#1B2238"
-                                                  Foreground="White" />
-                                    </StackPanel>
-                                    <StackPanel Width="220"
-                                                Margin="0,0,16,12">
-                                        <TextBlock Text="Unite"
-                                                   FontSize="13"
-                                                   FontWeight="SemiBold"
-                                                   Opacity="0.85" />
-                                        <ComboBox ItemsSource="{Binding SelectedClass.Units}"
-                                                  SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
-                                                  DisplayMemberPath="Name"
-                                                  Padding="8,4"
-                                                  Background="#1B2238"
-                                                  Foreground="White" />
-                                    </StackPanel>
-                                </WrapPanel>
-
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="0,0,0,12">
-                                    <Button Content="Soru Bankasini Yukle"
-                                            Style="{StaticResource SecondaryButtonStyle}"
-                                            Command="{Binding LoadQuestionBankCommand}"
-                                            Margin="0,0,12,0" />
-                                    <Button Content="PDF'den Soru Aktar"
-                                            Style="{StaticResource SecondaryButtonStyle}"
-                                            Command="{Binding ImportQuestionsCommand}" />
-                                </StackPanel>
-
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,8"
                                             Visibility="{Binding IsQuestionBankLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
