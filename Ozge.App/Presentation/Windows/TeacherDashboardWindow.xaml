@@ -46,6 +46,39 @@
             </Setter>
         </Style>
 
+        <Style x:Key="QuizSubMenuItemStyle"
+               TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Container"
+                                CornerRadius="12"
+                                Background="#262C43"
+                                Padding="12,6"
+                                BorderBrush="Transparent"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Container" Property="Background" Value="#4A6AFF" />
+                                <Setter TargetName="Container" Property="BorderBrush" Value="{StaticResource TeacherAccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Container" Property="BorderBrush" Value="{StaticResource TeacherAccentMutedBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="ComboBox">
             <Style.Resources>
                 <SolidColorBrush x:Key="ComboBackgroundBrush" Color="#151D33" />

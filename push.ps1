@@ -2,8 +2,8 @@
   [string]$ProjectPath = "F:\Projeler\Github\Codex\Codex",
   [string]$Owner       = "CakmaIT",
   [string]$Repo        = "Codex",
-  [string]$Branch      = "Ozgev4",
-  [string]$GitToken    = "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"
+  [string]$Branch      = "Ozge",
+  [string]$GitToken    = "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"
 )
 
 $ErrorActionPreference = "Continue"

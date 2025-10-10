@@ -13,10 +13,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Win32;
 using Ozge.App.Presentation.Messaging;
+using Ozge.App.Infrastructure;
 using Ozge.Core.Contracts;
 using Ozge.Core.Domain.Enums;
 using Ozge.Core.Models;
 using Ozge.Core.State;
+using System.Windows;
 
 namespace Ozge.App.Presentation.ViewModels;
 
@@ -27,6 +29,8 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private readonly IQuizSessionService _quizSessionService;
     private readonly IQuestionImportService _questionImportService;
     private readonly IDisplayService _displayService;
+    private readonly ISoundSettingsService _soundSettingsService;
+    private readonly ISoundEffectPlayer _soundEffectPlayer;
 
     public ObservableCollection<ClassItemViewModel> Classes { get; } = new();
     public ObservableCollection<GroupScoreItem> Leaderboard { get; } = new();
@@ -35,6 +39,7 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     public ObservableCollection<ProjectorDisplayOptionViewModel> ProjectorDisplays { get; } = new();
     public ObservableCollection<DashboardMenuOptionViewModel> DashboardMenus { get; } = new();
     public ObservableCollection<EditableQuizOptionViewModel> EditableQuestionOptions { get; } = new();
+    public ObservableCollection<QuizSubMenuOptionViewModel> QuizSubMenus { get; } = new();
 
     [ObservableProperty]
     private ClassItemViewModel? selectedClass;
@@ -109,6 +114,12 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
     private string currentQuestionTitle = "Quiz baslamadi";
 
     [ObservableProperty]
+    private string currentQuestionAnswer = string.Empty;
+
+    [ObservableProperty]
+    private bool hasCurrentQuestionAnswer;
+
+    [ObservableProperty]
     private string nextQuestionButtonText = "Sonraki Soru";
 
     [ObservableProperty]
@@ -149,6 +160,36 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
 
     [ObservableProperty]
     private string questionEditStatusMessage = string.Empty;
+
+    [ObservableProperty]
+    private QuizSubMenuOptionViewModel? selectedQuizSubMenu;
+
+    [ObservableProperty]
+    private bool isQuizControlSubMenuActive;
+
+    [ObservableProperty]
+    private bool isQuizQuestionBankSubMenuActive;
+
+    [ObservableProperty]
+    private string? correctSoundPath;
+
+    [ObservableProperty]
+    private string? incorrectSoundPath;
+
+    [ObservableProperty]
+    private string correctSoundDisplay = "Ses secilmedi";
+
+    [ObservableProperty]
+    private string incorrectSoundDisplay = "Ses secilmedi";
+    partial void OnCorrectSoundPathChanged(string? value)
+    {
+        CorrectSoundDisplay = FormatSoundDisplay(value);
+    }
+
+    partial void OnIncorrectSoundPathChanged(string? value)
+    {
+        IncorrectSoundDisplay = FormatSoundDisplay(value);
+    }
 
     [ObservableProperty]
     private string bulkQuestionInput = string.Empty;
@@ -207,6 +248,8 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         IQuizSessionService quizSessionService,
         IQuestionImportService questionImportService,
         IDisplayService displayService,
+        ISoundSettingsService soundSettingsService,
+        ISoundEffectPlayer soundEffectPlayer,
         IMessenger messenger)
         : base(messenger)
     {
@@ -215,9 +258,16 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         _quizSessionService = quizSessionService;
         _questionImportService = questionImportService;
         _displayService = displayService;
+        _soundSettingsService = soundSettingsService;
+        _soundEffectPlayer = soundEffectPlayer;
+
+        _soundSettingsService.SettingsChanged += OnSoundSettingsChanged;
 
         LoadProjectorDisplays();
         InitializeMenus();
+        InitializeQuizSubMenus();
+        ApplySoundSettings(_soundSettingsService.Current);
+
         UpdateFromState(_stateStore.Current);
     }
 
@@ -318,6 +368,57 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         DashboardMenus.ReplaceWith(menus);
         SelectedMenu ??= DashboardMenus.FirstOrDefault();
     }
+
+    private void InitializeQuizSubMenus()
+    {
+        var subMenus = new[]
+        {
+            QuizSubMenuOptionViewModel.Create(QuizSubMenuKey.Control, "Quiz Yönetimi"),
+            QuizSubMenuOptionViewModel.Create(QuizSubMenuKey.QuestionBank, "Soru Bankası")
+        };
+
+        QuizSubMenus.ReplaceWith(subMenus);
+        SelectedQuizSubMenu = QuizSubMenus.FirstOrDefault();
+    }
+
+    partial void OnSelectedQuizSubMenuChanged(QuizSubMenuOptionViewModel? value)
+    {
+        IsQuizControlSubMenuActive = value?.Key == QuizSubMenuKey.Control;
+        IsQuizQuestionBankSubMenuActive = value?.Key == QuizSubMenuKey.QuestionBank;
+
+        if (IsQuizQuestionBankSubMenuActive &&
+            QuestionBank.Count == 0 &&
+            !IsQuestionBankLoading &&
+            SelectedClass is not null &&
+            SelectedUnit is not null)
+        {
+            if (LoadQuestionBankCommand.CanExecute(null))
+            {
+                LoadQuestionBankCommand.Execute(null);
+            }
+        }
+    }
+
+    private void ApplySoundSettings(SoundSettings settings)
+    {
+        CorrectSoundPath = settings.CorrectSoundPath;
+        IncorrectSoundPath = settings.IncorrectSoundPath;
+    }
+
+    private void OnSoundSettingsChanged(object? sender, SoundSettings settings)
+    {
+        if (Application.Current is { Dispatcher: { } dispatcher } && !dispatcher.CheckAccess())
+        {
+            dispatcher.Invoke(() => ApplySoundSettings(settings));
+        }
+        else
+        {
+            ApplySoundSettings(settings);
+        }
+    }
+
+    private static string FormatSoundDisplay(string? path) =>
+        string.IsNullOrWhiteSpace(path) ? "Ses secilmedi" : Path.GetFileName(path);
 
     public void Receive(AppStateChangedMessage message)
     {
@@ -580,6 +681,93 @@ public sealed partial class TeacherDashboardViewModel : ViewModelBase, IRecipien
         var newValue = !_projectorWindowManager.IsFullScreen;
         _projectorWindowManager.SetFullScreen(newValue);
         RefreshProjectorStatus();
+    }
+    [RelayCommand]
+    private void SelectCorrectSound()
+    {
+        var filePath = PromptForSoundFile();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(filePath, null, updateCorrect: true, updateIncorrect: false);
+    }
+
+    [RelayCommand]
+    private void ClearCorrectSound()
+    {
+        if (string.IsNullOrWhiteSpace(CorrectSoundPath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(null, null, updateCorrect: true, updateIncorrect: false);
+    }
+
+    [RelayCommand]
+    private async Task PreviewCorrectSoundAsync()
+    {
+        await _soundEffectPlayer.PreviewAsync(CorrectSoundPath);
+    }
+
+    [RelayCommand]
+    private void SelectIncorrectSound()
+    {
+        var filePath = PromptForSoundFile();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(null, filePath, updateCorrect: false, updateIncorrect: true);
+    }
+
+    [RelayCommand]
+    private void ClearIncorrectSound()
+    {
+        if (string.IsNullOrWhiteSpace(IncorrectSoundPath))
+        {
+            return;
+        }
+
+        UpdateSoundSettings(null, null, updateCorrect: false, updateIncorrect: true);
+    }
+
+    [RelayCommand]
+    private async Task PreviewIncorrectSoundAsync()
+    {
+        await _soundEffectPlayer.PreviewAsync(IncorrectSoundPath);
+    }
+
+    private void UpdateSoundSettings(string? correct, string? incorrect, bool updateCorrect, bool updateIncorrect)
+    {
+        _soundSettingsService.Update(current =>
+        {
+            var updated = current;
+            if (updateCorrect)
+            {
+                updated = updated with { CorrectSoundPath = correct };
+            }
+
+            if (updateIncorrect)
+            {
+                updated = updated with { IncorrectSoundPath = incorrect };
+            }
+
+            return updated;
+        });
+    }
+
+    private static string? PromptForSoundFile()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Ses dosyasi sec",
+            Filter = "Ses Dosyalari (*.wav;*.mp3;*.aac;*.wma;*.flac)|*.wav;*.mp3;*.aac;*.wma;*.flac|Tum Dosyalar (*.*)|*.*"
+        };
+
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
     [RelayCommand]

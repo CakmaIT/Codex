@@ -118,6 +118,8 @@ public partial class App : System.Windows.Application
         services.AddSingleton<IAppStateStore, AppStateStore>();
         services.AddSingleton<IProjectorWindowManager, ProjectorWindowManager>();
         services.AddSingleton<IJobQueue, NullJobQueue>();
+        services.AddSingleton<ISoundSettingsService, SoundSettingsService>();
+        services.AddSingleton<ISoundEffectPlayer, SoundEffectPlayer>();
         services.AddSingleton<IQuizSessionService, QuizSessionService>();
         services.AddSingleton<IQuestionImportService, QuestionImportService>();
         services.AddSingleton<DependencyCheckService>();
