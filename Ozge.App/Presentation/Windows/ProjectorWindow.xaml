@@ -164,7 +164,7 @@
                                                 <Setter Property="Background" Value="{StaticResource OptionBrushA}" />
                                                 <Setter Property="Opacity" Value="0.95" />
                                                 <Setter Property="BorderBrush" Value="#22FFFFFF" />
-                                                <Setter Property="BorderThickness" Value="1" />
+                                                <Setter Property="BorderThickness" Value="2" />
                                                 <Setter Property="Effect">
                                                     <Setter.Value>
                                                         <DropShadowEffect BlurRadius="16"
@@ -186,7 +186,6 @@
                                                         <Setter Property="Background" Value="{StaticResource OptionBrushE}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
-                                                        <Setter Property="BorderThickness" Value="4" />
                                                         <Setter Property="BorderBrush" Value="White" />
                                                         <Setter Property="Effect">
                                                             <Setter.Value>
@@ -200,8 +199,15 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
-                                        <DockPanel>
-                                            <Border Width="48"
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0"
+                                                    Width="48"
                                                     Height="48"
                                                     CornerRadius="24"
                                                     Margin="0,0,16,0"
@@ -214,12 +220,34 @@
                                                            HorizontalAlignment="Center"
                                                            VerticalAlignment="Center" />
                                             </Border>
-                                            <TextBlock Text="{Binding Text}"
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Text}"
                                                        FontSize="32"
                                                        FontWeight="SemiBold"
                                                        TextWrapping="Wrap"
                                                        VerticalAlignment="Center" />
-                                        </DockPanel>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="✔"
+                                                       FontSize="34"
+                                                       FontWeight="Bold"
+                                                       Margin="16,0,0,0"
+                                                       Foreground="White"
+                                                       VerticalAlignment="Center"
+                                                       MinWidth="48">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Hidden" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsHighlighted}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

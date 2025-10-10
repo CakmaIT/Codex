@@ -18,6 +18,7 @@ public sealed class AppStateBuilder
     public bool IsAnswerRevealEnabled { get; set; }
     public bool IsProjectorFrozen { get; set; }
     public string? PreferredProjectorDisplayId { get; set; }
+    public string? CelebrationSoundPath { get; set; }
     public QuizState Quiz { get; set; }
 
     public AppStateBuilder(AppState state)
@@ -30,6 +31,7 @@ public sealed class AppStateBuilder
         IsAnswerRevealEnabled = state.IsAnswerRevealEnabled;
         IsProjectorFrozen = state.IsProjectorFrozen;
         PreferredProjectorDisplayId = state.PreferredProjectorDisplayId;
+        CelebrationSoundPath = state.CelebrationSoundPath;
         Quiz = state.Quiz;
     }
 
@@ -83,6 +85,7 @@ public sealed class AppStateBuilder
         IsAnswerRevealEnabled,
         IsProjectorFrozen,
         PreferredProjectorDisplayId,
+        CelebrationSoundPath,
         Quiz,
         DateTimeOffset.UtcNow);
 }

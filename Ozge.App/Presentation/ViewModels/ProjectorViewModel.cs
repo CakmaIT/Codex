@@ -44,6 +44,9 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
     [ObservableProperty]
     private bool showCelebration;
 
+    [ObservableProperty]
+    private string? celebrationSoundPath;
+
     public ProjectorViewModel(IMessenger messenger)
         : base(messenger)
     {
@@ -90,6 +93,7 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
             _ => "Hazir miyiz?"
         };
 
+        CelebrationSoundPath = state.CelebrationSoundPath;
         UpdateQuizPresentation(state);
     }
 
@@ -125,7 +129,7 @@ public sealed partial class ProjectorViewModel : ViewModelBase, IRecipient<AppSt
             QuizProgressValue = 0;
             QuizOptions.Clear();
             IsQuizVisible = false;
-            ShowCelebration = state.ActiveMode == LessonMode.Result && state.Quiz.TotalQuestions > 0;
+            ShowCelebration = state.ActiveMode == LessonMode.Result;
         }
     }
 
